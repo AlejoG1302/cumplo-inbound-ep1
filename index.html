@@ -1,0 +1,2147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Cumplo — Estrategia de Marketing Conversacional Integrada</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#eee;overflow-x:hidden;background:#0a0a0a}
+body{background-color:#0a0a0a;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:32px 32px}
+
+/* HEADER */
+.hdr{position:sticky;top:0;z-index:200;background:rgba(10,10,10,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.08);padding:0 40px;height:60px;display:flex;align-items:center;justify-content:space-between}
+.hdr-brand{display:flex;align-items:center;gap:12px}
+.hdr-logo{font-size:22px;font-weight:800;color:#FF6A00;letter-spacing:-0.5px}
+.hdr-sep{width:1px;height:24px;background:rgba(255,255,255,.1)}
+.hdr-title{font-size:13px;color:#777;font-weight:400}
+.hdr-badges{display:flex;gap:8px}
+.hbadge{font-size:10px;font-weight:700;letter-spacing:.6px;padding:4px 12px;border-radius:20px;text-transform:uppercase}
+.hb-orange{background:rgba(255,106,0,.12);color:#FF6A00;border:1px solid rgba(255,106,0,.3)}
+.hb-indigo{background:rgba(99,102,241,.1);color:#818cf8;border:1px solid rgba(99,102,241,.25)}
+.hb-cyan{background:rgba(34,211,238,.08);color:#22d3ee;border:1px solid rgba(34,211,238,.2)}
+
+/* MAIN */
+.canvas{padding:40px;min-height:calc(100vh - 60px)}
+.wf-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;max-width:1480px;margin:0 auto}
+
+/* COLUMN */
+.wf-col{background:rgba(255,255,255,.018);border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:28px 22px 40px;display:flex;flex-direction:column;align-items:center}
+.wf-col-hdr{width:100%;margin-bottom:28px;display:flex;align-items:flex-start;gap:10px}
+.wf-tag{font-size:9px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;padding:3px 9px;border-radius:4px;flex-shrink:0;margin-top:2px}
+.wf1 .wf-tag{background:rgba(99,102,241,.15);color:#818cf8;border:1px solid rgba(99,102,241,.3)}
+.wf2 .wf-tag{background:rgba(34,211,238,.1);color:#22d3ee;border:1px solid rgba(34,211,238,.25)}
+.wf-col-title{font-size:14px;font-weight:700;color:#ddd}
+.wf-col-sub{font-size:11px;color:#555;margin-top:3px;line-height:1.4}
+
+/* NODE */
+.node{width:100%;max-width:340px;border-radius:14px;padding:16px 18px;cursor:pointer;transition:transform .15s,box-shadow .15s;position:relative}
+.node:hover{transform:scale(1.025);z-index:10}
+.node-inner{display:flex;align-items:flex-start;gap:12px}
+.node-icon{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.node-label{font-size:15px;font-weight:700;margin-bottom:3px}
+.node-sub{font-size:11px;opacity:.6;line-height:1.4}
+.node-hint{font-size:9px;color:#444;margin-top:6px;text-align:center;letter-spacing:.3px}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,106,0,0)}50%{box-shadow:0 0 20px 6px rgba(255,106,0,.22)}}
+.node-entry{animation:pulse 2.2s ease-in-out infinite}
+
+/* CONNECTORS */
+.conn{display:flex;flex-direction:column;align-items:center;padding:2px 0;width:100%}
+.conn-line{width:2px;height:28px;background:rgba(255,255,255,.14)}
+.conn-line.dash{background:repeating-linear-gradient(to bottom,rgba(255,255,255,.2) 0,rgba(255,255,255,.2) 4px,transparent 4px,transparent 9px)}
+.conn-arrow{width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid rgba(255,255,255,.2)}
+.conn-lbl{font-size:9px;font-weight:600;letter-spacing:.5px;color:#444;text-transform:uppercase;margin:2px 0}
+
+/* BRIDGE NOTE */
+.bridge-note{width:100%;max-width:340px;background:rgba(34,211,238,.06);border:1px dashed rgba(34,211,238,.22);border-radius:8px;padding:7px 14px;font-size:10.5px;color:#22d3ee;text-align:center;line-height:1.5}
+
+/* BIFURCATION */
+.bif-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;width:100%;max-width:340px}
+.bif-node{background:#111;border-radius:10px;padding:12px 8px;cursor:pointer;transition:transform .15s,border-color .15s;text-align:center;border:1px solid rgba(255,255,255,.08)}
+.bif-node:hover{transform:scale(1.04)}
+.bif-icon{font-size:20px;margin-bottom:5px}
+.bif-label{font-size:11px;font-weight:700;margin-bottom:2px}
+.bif-sub{font-size:9.5px;opacity:.6;line-height:1.3}
+
+/* PANEL */
+#panel{position:fixed;top:60px;right:0;height:calc(100vh - 60px);width:min(640px,34vw);min-width:460px;background:#0d0d0d;border-left:1px solid rgba(255,255,255,.08);transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);z-index:150;display:flex;flex-direction:column;overflow:hidden}
+#panel.open{transform:translateX(0)}
+.panel-close{position:absolute;top:16px;right:18px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:#888;border-radius:6px;cursor:pointer;padding:5px 11px;font-size:12px;z-index:5}
+.panel-close:hover{color:#eee;background:rgba(255,255,255,.12)}
+.panel-hdr{padding:22px 24px 16px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0}
+.panel-bar{height:3px;border-radius:2px;width:36px;margin-bottom:12px}
+.panel-title{font-size:19px;font-weight:700;color:#eee;margin-bottom:4px}
+.panel-sub{font-size:12px;color:#555}
+.panel-body{flex:1;overflow-y:auto;padding:22px 24px}
+.panel-body::-webkit-scrollbar{width:4px}
+.panel-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
+
+/* PANEL ATOMS */
+.p-sec{font-size:10px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:#999;margin-bottom:10px;margin-top:22px}
+.p-sec:first-child{margin-top:0}
+.p-div{height:1px;background:rgba(255,255,255,.06);margin:18px 0}
+.seg-row{display:flex;gap:8px;margin-bottom:9px;align-items:flex-start}
+.seg-dot{width:6px;height:6px;border-radius:50%;background:#FF6A00;flex-shrink:0;margin-top:5px}
+.seg-txt{font-size:13px;color:#ccc;line-height:1.5}
+.seg-txt strong{color:#FF6A00}
+.tag-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.tag{background:rgba(255,106,0,.1);border:1px solid rgba(255,106,0,.25);color:#FF6A00;border-radius:20px;padding:3px 12px;font-size:11.5px;font-weight:500}
+.info-chip{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:6px 12px;font-size:12px;color:#888;margin-bottom:8px}
+
+/* AD MOCK */
+.ad-mock{background:#16162a;border-radius:12px;overflow:hidden;border:1px solid rgba(99,102,241,.2);margin-bottom:16px}
+.ad-hdr{display:flex;align-items:center;gap:9px;padding:10px 13px;border-bottom:1px solid rgba(255,255,255,.05)}
+.ad-ava{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#FF6A00,#FF9500);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0}
+.ad-page{font-size:13px;font-weight:600;color:#eee}
+.ad-spon{font-size:10px;color:#555}
+.ad-creative{position:relative;height:170px;background:linear-gradient(135deg,#071220 0%,#0d2137 40%,#0a2518 100%);overflow:hidden;display:flex;align-items:center;justify-content:center}
+.ad-svg-bg{position:absolute;inset:0;opacity:.18}
+.ad-copy{position:relative;z-index:1;text-align:center;padding:0 24px}
+.ad-hl{font-size:19px;font-weight:800;color:#fff;line-height:1.2;margin-bottom:7px}
+.ad-sl{font-size:12px;color:rgba(255,255,255,.75);line-height:1.5;margin-bottom:10px}
+.ad-pill{display:inline-block;background:rgba(255,106,0,.85);color:#fff;font-size:10px;font-weight:700;padding:4px 12px;border-radius:12px}
+.ad-foot{padding:10px 13px}
+.ad-dom{font-size:10px;color:#555;margin-bottom:2px}
+.ad-fhl{font-size:13.5px;font-weight:600;color:#eee;margin-bottom:2px}
+.ad-fsl{font-size:11px;color:#777;margin-bottom:9px}
+.ad-btns{display:flex;gap:8px}
+.ad-btn-p{flex:1;background:#1877F2;border-radius:6px;padding:8px;text-align:center;font-size:11.5px;font-weight:600;color:#fff;cursor:pointer}
+.ad-btn-s{flex:1;background:rgba(255,255,255,.06);border-radius:6px;padding:8px;text-align:center;font-size:11.5px;color:#aaa;cursor:pointer}
+.ad-react{display:flex;align-items:center;gap:6px;padding:8px 13px 6px;font-size:11px;color:#555;border-top:1px solid rgba(255,255,255,.05)}
+
+/* BROWSER MOCK */
+.browser{background:#101010;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,.08);margin-bottom:14px}
+.browser-bar{background:#1a1a1a;padding:8px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,.06)}
+.b-dots{display:flex;gap:5px}
+.b-dot{width:9px;height:9px;border-radius:50%}
+.b-url{flex:1;background:rgba(255,255,255,.05);border-radius:4px;padding:4px 10px;font-size:11px;color:#666}
+.lp{padding:20px}
+.lp-logo{font-size:19px;font-weight:800;color:#FF6A00;margin-bottom:14px}
+.lp-hl{font-size:16px;font-weight:700;color:#eee;line-height:1.3;margin-bottom:5px}
+.lp-sl{font-size:12px;color:#888;margin-bottom:14px;line-height:1.5}
+.lp-trust{display:flex;gap:0;margin-bottom:14px;border:1px solid rgba(255,255,255,.06);border-radius:8px;overflow:hidden}
+.trust-item{flex:1;text-align:center;padding:10px 4px;border-right:1px solid rgba(255,255,255,.06)}
+.trust-item:last-child{border-right:none}
+.trust-val{font-size:14px;font-weight:700;color:#FF6A00}
+.trust-lbl{font-size:9px;color:#555;margin-top:2px;line-height:1.2}
+.lp-form{display:flex;flex-direction:column;gap:8px}
+.lf-field label{display:block;font-size:10px;color:#555;font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.lf-inp{width:100%;background:#1a1a1a;border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:8px 12px;color:#eee;font-size:12.5px;outline:none;transition:border .2s}
+.lf-inp:focus{border-color:#FF6A00}
+.lf-btn{width:100%;background:#FF6A00;color:#fff;border:none;border-radius:8px;padding:11px;font-size:13px;font-weight:700;cursor:pointer;margin-top:4px;transition:opacity .15s}
+.lf-btn:hover{opacity:.88}
+.lf-disc{font-size:10px;color:#444;text-align:center;margin-top:4px}
+
+/* HUBSPOT WORKFLOW */
+.hs-wf{background:#131313;border-radius:10px;padding:16px;border:1px solid rgba(255,255,255,.06);margin-bottom:14px}
+.hs-wf-title{font-size:10px;font-weight:700;color:#FF6A00;text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px}
+.hs-node{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.hs-ico{width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.hs-txt{font-size:12.5px;color:#ccc}
+.hs-txt small{font-size:10.5px;color:#555;display:block;margin-top:1px}
+.hs-line{margin-left:14px;width:2px;height:14px;background:rgba(255,255,255,.1)}
+.hs-branch{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-left:0;margin-bottom:4px}
+.hs-branch-node{background:#1a1a1a;border-radius:6px;padding:8px;text-align:center;font-size:10.5px;color:#ccc;border:1px solid rgba(255,255,255,.08)}
+.hs-branch-node .hs-bico{font-size:14px;display:block;margin-bottom:3px}
+
+/* EMAIL CARDS */
+.email-card{background:#141414;border-radius:10px;padding:14px 16px;border:1px solid rgba(255,255,255,.06);margin-bottom:8px;cursor:pointer;transition:border-color .15s,background .15s}
+.email-card:hover{border-color:rgba(167,139,250,.4);background:#181818}
+.email-day{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:2px 9px;border-radius:4px;margin-bottom:8px}
+.email-subj{font-size:13.5px;font-weight:600;color:#eee;margin-bottom:4px;line-height:1.3}
+.email-prev{font-size:11.5px;color:#666;line-height:1.4;margin-bottom:8px}
+.email-footer{display:flex;align-items:center;gap:8px}
+.email-seg{font-size:10px;background:rgba(34,211,238,.08);color:#22d3ee;border:1px solid rgba(34,211,238,.2);border-radius:12px;padding:2px 9px}
+.email-open{margin-left:auto;font-size:10.5px;color:#a78bfa;text-decoration:underline;cursor:pointer}
+.reactivation-box{background:#111;border-radius:8px;border:1px dashed rgba(255,255,255,.1);padding:10px 14px;margin-top:10px}
+.reactivation-box p{font-size:11.5px;color:#666;line-height:1.5}
+.reactivation-box strong{color:#ccc}
+
+/* SCORING */
+.score-box{background:#131313;border-radius:10px;padding:14px;border:1px solid rgba(255,255,255,.06);margin-bottom:14px}
+.score-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12.5px}
+.score-row:last-child{border-bottom:none}
+.score-act{color:#ccc}
+.score-pts{font-weight:700;color:#22d3ee}
+.score-thresh{background:#1a1a1a;border-radius:8px;padding:10px 12px;margin-top:8px}
+.score-thresh p{font-size:11.5px;color:#888;line-height:1.5;margin-bottom:4px}
+.score-thresh p:last-child{margin-bottom:0}
+.score-thresh strong{color:#FF6A00}
+
+/* TAGS TABLE */
+.tags-tbl{width:100%;border-collapse:collapse;margin-bottom:14px}
+.tags-tbl th{font-size:10px;font-weight:700;color:#444;text-transform:uppercase;letter-spacing:.5px;padding:6px 10px;text-align:left;border-bottom:1px solid rgba(255,255,255,.07)}
+.tags-tbl td{font-size:12px;color:#ccc;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top;line-height:1.4}
+.tags-tbl td:first-child{font-family:monospace;color:#FF6A00;font-size:11px}
+
+/* CHAT */
+.chat-wrap{background:#111;border-radius:12px;border:1px solid rgba(255,255,255,.07);overflow:hidden;margin-bottom:14px}
+.chat-head{background:#1a1a2e;padding:11px 15px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.06)}
+.chat-ava{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#FF6A00,#FF9500);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0}
+.chat-name{font-size:13px;font-weight:600;color:#eee}
+.chat-status{font-size:10px;color:#22c55e}
+.chat-msgs{padding:14px;max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:9px}
+.chat-msgs::-webkit-scrollbar{width:3px}
+.chat-msgs::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.msg{max-width:88%;padding:9px 13px;border-radius:12px;font-size:13px;line-height:1.5;animation:fadeIn .25s ease}
+.msg.bot{background:#1e1e1e;color:#ddd;border-bottom-left-radius:3px;align-self:flex-start}
+.msg.user{background:#FF6A00;color:#fff;border-bottom-right-radius:3px;align-self:flex-end}
+.chat-opts{padding:0 14px 14px;display:flex;flex-direction:column;gap:6px}
+.chat-opt{background:transparent;border:1px solid rgba(255,255,255,.14);color:#ccc;border-radius:8px;padding:8px 14px;font-size:12.5px;cursor:pointer;text-align:left;transition:background .15s,border-color .15s,color .15s}
+.chat-opt:hover{background:#1a1a1a;border-color:#FF6A00;color:#FF6A00}
+.chat-cta{display:block;width:calc(100% - 28px);margin:0 14px 14px;background:#FF6A00;color:#fff;border:none;border-radius:8px;padding:10px;font-size:13px;font-weight:700;cursor:pointer;text-align:center}
+.score-live{display:flex;align-items:center;justify-content:space-between;background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.15);border-radius:8px;padding:8px 14px;margin:0 14px 10px;font-size:12px;color:#22d3ee}
+.score-live strong{font-size:14px}
+
+/* OBJECIONES */
+.obj-card{background:#141414;border-radius:10px;border:1px solid rgba(251,191,36,.12);padding:14px 15px;margin-bottom:8px}
+.obj-trigger{font-size:11px;font-weight:700;color:#fbbf24;margin-bottom:6px}
+.obj-kw{display:inline-block;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2);border-radius:4px;padding:1px 7px;margin:2px;font-family:monospace;font-size:11px;color:#fbbf24}
+.obj-resp{font-size:12.5px;color:#999;line-height:1.55;margin-top:6px}
+
+/* THANK YOU PAGE */
+.ty-mock{background:#101a18;border-radius:12px;padding:24px;text-align:center;border:1px solid rgba(34,211,238,.2);margin-bottom:14px}
+.ty-icon{font-size:34px;margin-bottom:10px}
+.ty-title{font-size:18px;font-weight:700;color:#eee;margin-bottom:6px}
+.ty-sub{font-size:13px;color:#888;margin-bottom:16px;line-height:1.5}
+.wsp-btn{display:inline-flex;align-items:center;gap:8px;background:#25D366;color:#fff;border:none;border-radius:10px;padding:10px 24px;font-size:13px;font-weight:700;cursor:pointer}
+
+/* CTA FINAL */
+.cta-card{background:#141414;border-radius:10px;padding:14px 16px;border:1px solid rgba(255,255,255,.06);margin-bottom:10px}
+.cta-card h4{font-size:14px;font-weight:700;color:#eee;margin-bottom:4px}
+.cta-card p{font-size:12.5px;color:#888;margin-bottom:12px;line-height:1.4}
+.cta-btns{display:flex;gap:8px;flex-wrap:wrap}
+.btn-prim{background:#FF6A00;color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:12.5px;font-weight:700;cursor:pointer}
+.btn-sec{background:transparent;color:#a78bfa;border:1px solid rgba(167,139,250,.3);border-radius:8px;padding:9px 18px;font-size:12.5px;cursor:pointer}
+.exec-card{background:#141414;border-radius:10px;padding:14px 16px;border:1px solid rgba(251,191,36,.15);display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.exec-ava{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#1a4a7a,#2a6a9a);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.exec-name{font-size:13.5px;font-weight:600;color:#eee}
+.exec-role{font-size:11px;color:#888;margin-top:1px}
+
+/* PROFILE CARDS */
+.profile-card{background:#141414;border-radius:10px;padding:14px 16px;border:1px solid rgba(255,255,255,.06);margin-bottom:10px}
+.profile-card h4{font-size:14px;font-weight:700;color:#eee;margin-bottom:4px}
+.profile-card .sub{font-size:11px;color:#888;margin-bottom:12px}
+.stat-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:12.5px}
+.stat-row:last-child{border-bottom:none}
+.stat-k{color:#777}
+.stat-v{color:#eee;font-weight:600}
+.stat-v.hi{color:#FF6A00}
+
+/* KPI TABLE */
+.kpi-tbl{width:100%;border-collapse:collapse}
+.kpi-tbl th{font-size:10px;font-weight:700;color:#444;text-transform:uppercase;letter-spacing:.5px;padding:6px 10px;text-align:left;border-bottom:1px solid rgba(255,255,255,.07)}
+.kpi-tbl td{font-size:12px;color:#ccc;padding:7px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top;line-height:1.4}
+.kpi-lv{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:2px 8px;border-radius:4px}
+
+/* MODAL */
+#modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(5px);z-index:300;display:none;align-items:center;justify-content:center;padding:40px}
+#modal-ov.open{display:flex}
+.modal-box{background:#0d0d0d;border:1px solid rgba(255,255,255,.1);border-radius:16px;width:100%;max-width:680px;max-height:82vh;display:flex;flex-direction:column;animation:mIn .2s ease;overflow:hidden}
+@keyframes mIn{from{opacity:0;transform:scale(.96) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-hdr{padding:20px 26px 16px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0}
+.modal-close{float:right;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:#888;border-radius:6px;cursor:pointer;padding:5px 11px;font-size:12px}
+.modal-close:hover{color:#eee}
+.m-badge{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;margin-bottom:12px;display:block}
+.m-from{font-size:12.5px;color:#666;margin-bottom:4px}
+.m-from strong{color:#aaa}
+.m-subj{font-size:20px;font-weight:700;color:#eee;line-height:1.3}
+.modal-segs{display:flex;gap:8px;flex-wrap:wrap;padding:12px 26px;border-top:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.015);flex-shrink:0}
+.modal-segs span{font-size:11px;color:#555;align-self:center}
+.modal-body{flex:1;overflow-y:auto;padding:24px 26px}
+.modal-body::-webkit-scrollbar{width:4px}
+.modal-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1)}
+.email-txt{font-size:14px;color:#ccc;line-height:1.8}
+.email-txt p{margin-bottom:14px}
+.email-txt h3{font-size:15px;font-weight:700;color:#eee;margin:18px 0 8px}
+.email-txt ul{padding-left:18px;margin-bottom:14px}
+.email-txt li{margin-bottom:7px}
+.email-txt .hi{color:#FF6A00;font-weight:600}
+.email-txt .cta-blk{background:#FF6A00;color:#fff;border-radius:9px;padding:13px 22px;text-align:center;font-size:14px;font-weight:700;margin:18px 0;cursor:pointer;display:block}
+.email-txt .sec-lnk{text-align:center;font-size:12.5px;color:#a78bfa;text-decoration:underline;cursor:pointer;margin-top:-10px;margin-bottom:14px;display:block}
+.email-txt hr{border:none;border-top:1px solid rgba(255,255,255,.06);margin:16px 0}
+.email-txt .foot{font-size:11.5px;color:#444}
+.email-txt .seg-chip{display:inline-block;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.2);color:#22d3ee;border-radius:6px;padding:5px 12px;font-size:11px;margin-bottom:14px}
+
+/* ══════════════════════════════════
+   PORTADA — PÁGINA 1
+══════════════════════════════════ */
+.cover{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 60px 100px;overflow:hidden}
+.cover-noise{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(255,106,0,.06) 0%,transparent 70%),radial-gradient(ellipse 40% 40% at 20% 70%,rgba(99,102,241,.07) 0%,transparent 60%),radial-gradient(ellipse 30% 30% at 80% 20%,rgba(34,211,238,.05) 0%,transparent 60%);pointer-events:none}
+.cover-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;max-width:1200px;width:100%;align-items:center;position:relative;z-index:1}
+/* LEFT */
+.cover-left{display:flex;flex-direction:column;gap:0}
+.cover-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(255,106,0,.1);border:1px solid rgba(255,106,0,.25);border-radius:20px;padding:5px 16px;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#FF6A00;margin-bottom:28px;width:fit-content}
+.cover-eyebrow{font-size:13px;color:#555;font-weight:500;letter-spacing:.4px;margin-bottom:14px}
+.cover-h1{font-size:clamp(28px,3.2vw,46px);font-weight:900;color:#fff;line-height:1.12;letter-spacing:-1px;margin-bottom:10px}
+.cover-h1 span{background:linear-gradient(135deg,#FF6A00,#FF9500);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cover-h2{font-size:clamp(18px,2vw,28px);font-weight:700;color:#888;line-height:1.3;margin-bottom:32px}
+.cover-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:36px}
+.cover-tag{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:5px 13px;font-size:11px;color:#666}
+.cover-divider{width:60px;height:3px;background:linear-gradient(90deg,#FF6A00,transparent);border-radius:2px;margin-bottom:28px}
+.cover-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.cstat{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:12px 14px;text-align:center}
+.cstat-v{font-size:18px;font-weight:800;color:#FF6A00}
+.cstat-l{font-size:9.5px;color:#555;margin-top:2px;line-height:1.3}
+/* RIGHT */
+.cover-right{display:flex;flex-direction:column;align-items:stretch}
+.cover-card{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:36px 32px;position:relative;overflow:hidden;transition:transform .35s cubic-bezier(.4,0,.2,1),box-shadow .35s,border-color .35s}
+.cover-card:hover{transform:translateY(-6px) scale(1.012);box-shadow:0 24px 60px rgba(0,0,0,.5),0 0 0 1px rgba(255,106,0,.15),inset 0 1px 0 rgba(255,255,255,.08);border-color:rgba(255,106,0,.3)}
+.cover-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% -10%,rgba(255,106,0,.08),transparent);opacity:0;transition:opacity .35s;pointer-events:none}
+.cover-card:hover::before{opacity:1}
+.cc-glow{position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:radial-gradient(circle,rgba(255,106,0,.12),transparent 70%);pointer-events:none;transition:opacity .35s}
+.cover-card:hover .cc-glow{opacity:1.5}
+.cc-course-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.25);border-radius:8px;padding:5px 13px;font-size:11px;font-weight:700;letter-spacing:.5px;color:#818cf8;margin-bottom:24px}
+.cc-title{font-size:15px;font-weight:800;color:#eee;margin-bottom:4px;letter-spacing:.2px}
+.cc-sub{font-size:12.5px;color:#666;margin-bottom:28px;line-height:1.5}
+.cc-divider{height:1px;background:rgba(255,255,255,.07);margin-bottom:24px}
+.cc-section-lbl{font-size:9.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:#555;margin-bottom:14px}
+.cc-members{display:flex;flex-direction:column;gap:11px}
+.cc-member{display:flex;align-items:center;gap:13px;padding:10px 14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;transition:background .2s,border-color .2s}
+.cover-card:hover .cc-member{border-color:rgba(255,255,255,.1)}
+.cc-ava{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0}
+.cc-mname{font-size:13px;font-weight:600;color:#ddd}
+.cc-mrole{font-size:10.5px;color:#555;margin-top:1px}
+.cc-footer{display:flex;align-items:center;justify-content:space-between;margin-top:22px;padding-top:18px;border-top:1px solid rgba(255,255,255,.06)}
+.cc-footer-txt{font-size:11px;color:#444;line-height:1.5}
+.cc-footer-logo{font-size:18px;font-weight:900;color:#FF6A00;letter-spacing:-0.5px}
+/* SCROLL ARROW */
+.cover-scroll{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;z-index:10;text-decoration:none}
+.cover-scroll-lbl{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#444}
+.cover-scroll-arrow{width:38px;height:38px;border:1px solid rgba(255,255,255,.12);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#555;font-size:16px;background:rgba(255,255,255,.04);transition:all .25s}
+.cover-scroll:hover .cover-scroll-arrow{border-color:rgba(255,106,0,.5);color:#FF6A00;background:rgba(255,106,0,.08);transform:translateY(3px)}
+@keyframes bounce-down{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+.cover-scroll-arrow{animation:bounce-down 2s ease-in-out infinite}
+/* PAGE SEPARATOR */
+.page-sep{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);margin:0}
+#page2{scroll-margin-top:0}
+
+/* KPI ANNOTATIONS — arms hidden, replaced by internal chips */
+.kpi-wrap{width:100%;max-width:340px}
+.kpi-arm{display:none!important}
+.kpi-box{display:none!important}
+
+/* NODE INTERNAL KPI CHIP */
+.node-kpi-divider{height:1px;background:rgba(255,255,255,.07);margin:10px 0 8px}
+.node-kpi-chip{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:7px 11px;cursor:pointer;transition:all .15s;text-align:left;width:100%}
+.node-kpi-chip:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.25)}
+.node-kpi-chip + .node-kpi-chip{margin-top:5px}
+.nkc-icon{font-size:13px;flex-shrink:0}
+.nkc-name{flex:1;font-size:11px;color:#888;font-weight:500;line-height:1.3}
+.nkc-badge{font-size:8.5px;letter-spacing:.4px;padding:2px 7px;border-radius:3px;font-weight:700;text-transform:uppercase;flex-shrink:0}
+.nkc-arrow{font-size:11px;color:#555;flex-shrink:0}
+/* Gold starred KPIs */
+.kpi-gold{border-color:rgba(234,179,8,.4)!important;background:rgba(234,179,8,.07)!important}
+.kpi-gold:hover{border-color:rgba(234,179,8,.7)!important;background:rgba(234,179,8,.14)!important}
+.kpi-gold .nkc-name{color:#d4a400}
+.kpi-gold .nkc-arrow{color:#eab308}
+
+/* KPI DETAIL MODAL */
+#kpi-modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(6px);z-index:500;display:none;align-items:center;justify-content:center;padding:40px}
+#kpi-modal-ov.open{display:flex}
+.kpi-modal-box{background:#0d0d0d;border:1px solid rgba(255,255,255,.1);border-radius:16px;width:100%;max-width:820px;max-height:84vh;display:flex;flex-direction:column;animation:mIn .2s ease;overflow:hidden}
+.kpi-mhdr{padding:18px 26px 14px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.kpi-macro{font-size:22px;font-weight:800;color:#eee;letter-spacing:-.5px}
+.kpi-mhdr-meta{display:flex;align-items:center;gap:10px}
+.km-star-badge{font-size:13px;background:rgba(234,179,8,.12);border:1px solid rgba(234,179,8,.35);border-radius:6px;padding:4px 10px;color:#eab308;font-size:11px;font-weight:700;letter-spacing:.3px}
+.kpi-mbody{display:grid;grid-template-columns:1fr 1fr;flex:1;overflow:hidden;min-height:0}
+.km-left{padding:22px 26px;overflow-y:auto;border-right:1px solid rgba(255,255,255,.07)}
+.km-right{padding:22px 26px;overflow-y:auto;background:rgba(255,255,255,.012)}
+.km-left::-webkit-scrollbar,.km-right::-webkit-scrollbar{width:4px}
+.km-left::-webkit-scrollbar-thumb,.km-right::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
+.km-title{font-size:15px;font-weight:700;color:#eee;margin-bottom:8px;line-height:1.35}
+.km-desc{font-size:13px;color:#aaa;line-height:1.7;margin-bottom:14px}
+.km-formula{background:rgba(255,106,0,.06);border:1px solid rgba(255,106,0,.2);border-radius:8px;padding:10px 14px;margin-bottom:11px;font-family:monospace;font-size:12px;color:#FF6A00}
+.km-meta{background:rgba(34,211,238,.05);border:1px solid rgba(34,211,238,.15);border-radius:8px;padding:8px 13px;margin-bottom:11px;font-size:11.5px;color:#22d3ee;line-height:1.5}
+.km-why{font-size:12px;color:#777;line-height:1.6}
+.km-sec{font-size:9.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#999;margin-bottom:12px}
+.km-node-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:10px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.km-ndot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.km-nname{font-size:12.5px;color:#ccc;font-weight:500}
+.km-nstage{font-size:10px;color:#555;margin-top:1px}
+.km-impact{background:rgba(255,255,255,.03);border-radius:8px;padding:12px 14px;margin-top:14px;border:1px dashed rgba(255,255,255,.1);font-size:12px;color:#777;line-height:1.55}
+.km-impact-lbl{font-size:10px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+
+/* META PAIR */
+.meta-pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%}
+.meta-node{background:#111;border-radius:12px;padding:12px 10px;cursor:pointer;transition:transform .15s,box-shadow .15s;text-align:center;border:1px solid rgba(99,102,241,.35);animation:pulse 2.2s ease-in-out infinite}
+.meta-node:hover{transform:scale(1.04)}
+.meta-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;margin:0 auto 7px;font-size:16px}
+.meta-n-label{font-size:10.5px;font-weight:700;margin-bottom:2px;font-family:monospace}
+.meta-n-sub{font-size:9.5px;opacity:.55;line-height:1.3}
+
+/* CHAT TEXT INPUT */
+.chat-input-row{display:flex;gap:6px;padding:0 14px 14px;margin-top:-4px}
+.chat-inp{flex:1;background:#1a1a1a;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px 12px;color:#eee;font-size:12px;outline:none;transition:border .2s;font-family:inherit}
+.chat-inp:focus{border-color:rgba(139,92,246,.5)}
+.chat-inp::placeholder{color:#444}
+.chat-send{background:rgba(139,92,246,.2);border:1px solid rgba(139,92,246,.35);color:#a78bfa;border-radius:8px;padding:8px 14px;font-size:11.5px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .15s}
+.chat-send:hover{background:rgba(139,92,246,.35)}
+.chat-kwinfo{font-size:10px;color:#444;text-align:center;padding:0 14px 8px;line-height:1.4}
+
+/* LANDING SELECT */
+.lf-select{width:100%;background:#1a1a1a;border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:8px 12px;color:#eee;font-size:12.5px;outline:none;transition:border .2s;appearance:none;cursor:pointer}
+.lf-select:focus{border-color:#FF6A00}
+.lf-select option{background:#1a1a1a;color:#eee}
+
+/* HUBSPOT FINAL NODE */
+.hs-final-section{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;padding-top:10px}
+.hs-final-merge{display:flex;align-items:center;gap:60px;margin-bottom:0}
+.hs-merge-line{display:flex;flex-direction:column;align-items:center}
+.hs-merge-lbl{font-size:9px;color:#444;letter-spacing:.4px;margin-bottom:2px}
+.hs-final-node{width:100%;max-width:700px;background:#111;border:1px solid rgba(255,106,0,.4);border-radius:16px;padding:20px 24px;cursor:pointer;transition:transform .15s,box-shadow .15s;position:relative}
+.hs-final-node:hover{transform:scale(1.01);box-shadow:0 0 30px rgba(255,106,0,.12)}
+.hs-final-hdr{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.hs-final-icon{width:46px;height:46px;border-radius:12px;background:rgba(255,106,0,.15);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.hs-final-title{font-size:16px;font-weight:700;color:#FF6A00}
+.hs-final-sub{font-size:11px;color:#666;margin-top:2px}
+.hs-contact-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.hs-cf{background:#0d0d0d;border-radius:8px;padding:10px 12px;border:1px solid rgba(255,255,255,.06)}
+.hs-cf-lbl{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#555;margin-bottom:4px}
+.hs-cf-val{font-size:12.5px;color:#ddd;font-weight:500}
+.hs-cf-val.ok{color:#4ade80}
+.hs-cf-val.no{color:#f87171}
+.hs-cf-val.warn{color:#fbbf24}
+.hs-cf-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.hs-cf-tag{font-size:9.5px;background:rgba(255,106,0,.1);border:1px solid rgba(255,106,0,.2);color:#FF6A00;border-radius:3px;padding:1px 6px;font-family:monospace}
+</style>
+</head>
+<body>
+
+<!-- ══ PÁGINA 1 — PORTADA ══ -->
+<div class="cover" id="page1">
+  <div class="cover-noise"></div>
+
+  <div class="cover-grid">
+
+    <!-- COLUMNA IZQUIERDA -->
+    <div class="cover-left">
+      <div class="cover-badge">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#FF6A00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Estrategia Inbound · 2026
+      </div>
+      <div class="cover-eyebrow">Caso de estudio · Fintech LATAM</div>
+      <div class="cover-h1">Estrategia de<br>Marketing<br><span>Conversacional</span><br>Integrada</div>
+      <div class="cover-h2">Caso: Cumplo Inversionistas</div>
+      <div class="cover-divider"></div>
+      <div class="cover-tags">
+        <span class="cover-tag">💬 WhatsApp + ManyChat</span>
+        <span class="cover-tag">📧 HubSpot Nurture</span>
+        <span class="cover-tag">🎯 Meta Ads</span>
+        <span class="cover-tag">🏷️ Lead Scoring</span>
+        <span class="cover-tag">🌱 Empresa B</span>
+      </div>
+      <div class="cover-stats">
+        <div class="cstat"><div class="cstat-v">USD 3.3B</div><div class="cstat-l">Financiados</div></div>
+        <div class="cstat"><div class="cstat-v">0.45%</div><div class="cstat-l">Default histórico</div></div>
+        <div class="cstat"><div class="cstat-v">+7.200</div><div class="cstat-l">Pymes apoyadas</div></div>
+      </div>
+    </div>
+
+    <!-- COLUMNA DERECHA — TARJETA ANIMADA -->
+    <div class="cover-right">
+      <div class="cover-card">
+        <div class="cc-glow"></div>
+
+        <div class="cc-course-badge">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="18" rx="3" stroke="#818cf8" stroke-width="2"/><path d="M8 10h8M8 14h5" stroke="#818cf8" stroke-width="1.5" stroke-linecap="round"/></svg>
+          MKA1215 · DuocUC 2026
+        </div>
+
+        <div class="cc-title">INBOUND MARKETING III</div>
+        <div class="cc-sub">Evaluación Parcial N°1<br>Encargo con Presentación · 15 minutos</div>
+
+        <div class="cc-divider"></div>
+
+        <div class="cc-section-lbl">👥 Integrantes del grupo</div>
+        <div class="cc-members">
+          <div class="cc-member">
+            <div class="cc-ava" style="background:linear-gradient(135deg,#818cf8,#6366f1)">AF</div>
+            <div>
+              <div class="cc-mname">Andrea Flores</div>
+              <div class="cc-mrole">Integrante · Grupo Cumplo</div>
+            </div>
+          </div>
+          <div class="cc-member">
+            <div class="cc-ava" style="background:linear-gradient(135deg,#FF6A00,#FF9500)">AG</div>
+            <div>
+              <div class="cc-mname">Alejandro García</div>
+              <div class="cc-mrole">Integrante · Grupo Cumplo</div>
+            </div>
+          </div>
+          <div class="cc-member">
+            <div class="cc-ava" style="background:linear-gradient(135deg,#22d3ee,#0e9fbf)">JV</div>
+            <div>
+              <div class="cc-mname">Jelanny Vera</div>
+              <div class="cc-mrole">Integrante · Grupo Cumplo</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cc-footer">
+          <div class="cc-footer-logo">Cumplo</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FLECHA SCROLL -->
+  <a class="cover-scroll" onclick="document.getElementById('page2').scrollIntoView({behavior:'smooth'})">
+    <span class="cover-scroll-lbl">Ver estrategia</span>
+    <span class="cover-scroll-arrow">↓</span>
+  </a>
+</div>
+
+<div class="page-sep"></div>
+
+<!-- ══ PÁGINA 2 — ESTRATEGIA ══ -->
+<div id="page2">
+
+<header class="hdr">
+  <div class="hdr-brand">
+    <span class="hdr-logo">Cumplo</span>
+    <div class="hdr-sep"></div>
+    <span class="hdr-title">Estrategia de Marketing Conversacional Integrada — EP1 MKA1215</span>
+  </div>
+  <div class="hdr-badges">
+    <span class="hbadge hb-orange">Campaña Conversión</span>
+    <span class="hbadge hb-indigo">WF 1 — Email Nurture</span>
+    <span class="hbadge hb-cyan">WF 2 — WhatsApp / ManyChat</span>
+  </div>
+</header>
+
+<main class="canvas">
+  <div class="wf-grid">
+
+    <!-- ══ WF 1 ══ -->
+    <div class="wf-col wf1">
+      <div class="wf-col-hdr">
+        <span class="wf-tag">WF 1</span>
+        <div>
+          <div class="wf-col-title">Captación y Nutrición por Email</div>
+          <div class="wf-col-sub">Meta Ads → Landing Page → HubSpot CRM → Secuencia D0 · D2 · D5</div>
+        </div>
+      </div>
+
+      <!-- META ADS PAIR -->
+      <div class="kpi-wrap">
+        <div style="text-align:center;font-size:9px;font-weight:700;letter-spacing:.6px;color:#555;text-transform:uppercase;margin-bottom:10px">Anuncios META — Punto de entrada al funnel</div>
+        <div class="meta-pair">
+          <div class="meta-node" onclick="openPanel('meta_token')" style="border-color:rgba(99,102,241,.5);animation-delay:.3s">
+            <div class="meta-icon" style="background:rgba(99,102,241,.15);">💎</div>
+            <div class="meta-n-label" style="color:#818cf8">lead_ads_token</div>
+            <div class="meta-n-sub">Tokens · Conservador<br>Diversificado</div>
+          </div>
+          <div class="meta-node" onclick="openPanel('meta')" style="border-color:rgba(255,106,0,.5);animation-delay:.8s">
+            <div class="meta-icon" style="background:rgba(255,106,0,.12);">🏭</div>
+            <div class="meta-n-label" style="color:#FF6A00">lead_ads_directa</div>
+            <div class="meta-n-sub">Directa · Sofisticado<br>Elige empresa</div>
+          </div>
+        </div>
+        <div class="node-hint" style="margin-top:6px;font-size:9px">Haz clic en cada anuncio para ver el detalle →</div>
+        <div class="node-kpi-divider" style="margin-top:10px"></div>
+        <div class="node-kpi-chip" onclick="openKpiModal('ctr'); event.stopPropagation()">
+          <span class="nkc-icon">📊</span>
+          <span class="nkc-name">CTR — Click-Through Rate</span>
+          <span class="nkc-badge" style="background:rgba(99,102,241,.12);color:#818cf8">Captación</span>
+          <span class="nkc-arrow">↗</span>
+        </div>
+        <div class="kpi-arm kpi-l">
+          <div class="kpi-box">
+            <div class="kpi-name">CTR del Anuncio</div>
+            <div class="kpi-desc">Mide la calidad del gancho y la relevancia del segmento impactado. Señal primaria para optimizar el CPL y reasignar presupuesto entre formatos.</div>
+            <span class="kpi-level" style="background:rgba(99,102,241,.12);color:#818cf8">Captación</span>
+          </div>
+          <div class="kpi-dline"></div>
+        </div>
+      </div>
+
+      <div class="conn"><div class="conn-line" style="background:rgba(99,102,241,.35)"></div><div class="conn-lbl">Ambos CTA → Landing</div><div class="conn-arrow" style="border-top-color:rgba(99,102,241,.4)"></div></div>
+
+      <!-- LANDING PAGE -->
+      <div class="kpi-wrap">
+        <div class="node" onclick="openPanel('landing')" style="background:#111;border:1px solid rgba(74,222,128,.35);">
+          <div class="node-inner">
+            <div class="node-icon" style="background:rgba(74,222,128,.12);">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="18" rx="3" stroke="#4ade80" stroke-width="1.5"/><path d="M2 7h20" stroke="#4ade80" stroke-width="1.2"/><circle cx="5" cy="5" r="1" fill="#4ade80"/><circle cx="8" cy="5" r="1" fill="#4ade80"/><rect x="6" y="11" width="12" height="1.5" rx=".75" fill="#4ade80" opacity=".6"/><rect x="6" y="14" width="8" height="1.5" rx=".75" fill="#4ade80" opacity=".4"/></svg>
+            </div>
+            <div>
+              <div class="node-label" style="color:#4ade80">Landing Page</div>
+              <div class="node-sub">Formulario reducido · CTA único<br>Nombre + Correo + Tel · Instrumento</div>
+            </div>
+          </div>
+          <div class="node-hint">Haz clic para explorar →</div>
+          <div class="node-kpi-divider"></div>
+          <div class="node-kpi-chip" onclick="openKpiModal('abandono'); event.stopPropagation()">
+            <span class="nkc-icon">⚠️</span>
+            <span class="nkc-name">Bounce Rate — Tasa de Abandono en Landing</span>
+            <span class="nkc-badge" style="background:rgba(251,191,36,.1);color:#fbbf24">Fricción</span>
+            <span class="nkc-arrow">↗</span>
+          </div>
+        </div>
+        <div class="kpi-arm kpi-l">
+          <div class="kpi-box">
+            <div class="kpi-name">Abandono en Landing</div>
+            <div class="kpi-desc">Detecta si el formulario o el mensaje generan abandono antes de capturar el dato. Alto abandono = fricción en el diseño o desalineación con el anuncio.</div>
+            <span class="kpi-level" style="background:rgba(251,191,36,.1);color:#fbbf24">Fricción</span>
+          </div>
+          <div class="kpi-dline"></div>
+        </div>
+      </div>
+
+      <div class="conn"><div class="conn-line dash" style="background:none"></div><div class="conn-lbl">Submit → HubSpot + activa WF2</div><div class="conn-arrow" style="border-top-color:rgba(255,106,0,.4)"></div></div>
+      <div class="bridge-note" style="margin-bottom:8px">⇢ Al enviar el formulario, activa simultáneamente el WF 2 (WhatsApp)</div>
+      <div class="conn"><div class="conn-line" style="background:rgba(255,106,0,.3)"></div><div class="conn-arrow" style="border-top-color:rgba(255,106,0,.4)"></div></div>
+
+      <!-- HUBSPOT -->
+      <div class="kpi-wrap">
+        <div class="node" onclick="openPanel('hubspot')" style="background:#111;border:1px solid rgba(255,106,0,.45);">
+          <div class="node-inner">
+            <div class="node-icon" style="background:rgba(255,106,0,.12);">
+              <svg width="26" height="26" viewBox="0 0 32 32"><circle cx="16" cy="16" r="13" fill="rgba(255,106,0,.18)"/><circle cx="16" cy="16" r="5.5" stroke="#FF6A00" stroke-width="2" fill="none"/><line x1="5" y1="12" x2="10.5" y2="16" stroke="#FF6A00" stroke-width="2" stroke-linecap="round"/><circle cx="5" cy="12" r="2" fill="#FF6A00"/><line x1="21.5" y1="10" x2="25" y2="6.5" stroke="#FF6A00" stroke-width="2" stroke-linecap="round"/><circle cx="25" cy="6.5" r="2" fill="#FF6A00"/><line x1="21.5" y1="22" x2="25" y2="25.5" stroke="#FF6A00" stroke-width="2" stroke-linecap="round"/><circle cx="25" cy="25.5" r="2" fill="#FF6A00"/></svg>
+            </div>
+            <div>
+              <div class="node-label" style="color:#FF6A00">HubSpot CRM</div>
+              <div class="node-sub">Crea contacto · Asigna tags · Lead scoring<br>Dispara secuencia de email</div>
+            </div>
+          </div>
+          <div class="node-hint">Haz clic para explorar →</div>
+          <div class="node-kpi-divider"></div>
+          <div class="node-kpi-chip" onclick="openKpiModal('avance'); event.stopPropagation()">
+            <span class="nkc-icon">⚡</span>
+            <span class="nkc-name">Flow Completion Rate — Tasa de Avance en el Flujo</span>
+            <span class="nkc-badge" style="background:rgba(255,106,0,.12);color:#FF6A00">Activación</span>
+            <span class="nkc-arrow">↗</span>
+          </div>
+        </div>
+        <div class="kpi-arm kpi-l">
+          <div class="kpi-box">
+            <div class="kpi-name">Tasa de Avance en el Flujo</div>
+            <div class="kpi-desc">% de leads que llegan al CTA principal vs. los que ingresan. Meta interna: &gt;50%. Detecta dónde se cae el funnel conversacional.</div>
+            <span class="kpi-level" style="background:rgba(255,106,0,.12);color:#FF6A00">Activación</span>
+          </div>
+          <div class="kpi-dline"></div>
+        </div>
+      </div>
+
+      <div class="conn"><div class="conn-line" style="background:rgba(167,139,250,.35)"></div><div class="conn-lbl">Workflow automático</div><div class="conn-arrow" style="border-top-color:rgba(167,139,250,.4)"></div></div>
+
+      <!-- EMAIL SEQUENCE -->
+      <div class="kpi-wrap">
+        <div class="node" onclick="openPanel('email_seq')" style="background:#111;border:1px solid rgba(167,139,250,.4);">
+          <div class="node-inner">
+            <div class="node-icon" style="background:rgba(167,139,250,.12);">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke="#a78bfa" stroke-width="1.5"/><path d="M2 7l10 7 10-7" stroke="#a78bfa" stroke-width="1.2"/></svg>
+            </div>
+            <div>
+              <div class="node-label" style="color:#a78bfa">Email Nurture</div>
+              <div class="node-sub">Secuencia D0 · D2 · D5 por perfil<br>Reactivación si no hay apertura</div>
+            </div>
+          </div>
+          <div class="node-hint">Haz clic para ver emails completos →</div>
+          <div class="node-kpi-divider"></div>
+          <div class="node-kpi-chip" onclick="openKpiModal('open_rate'); event.stopPropagation()">
+            <span class="nkc-icon">📧</span>
+            <span class="nkc-name">Open Rate — Tasa de Apertura de Email</span>
+            <span class="nkc-badge" style="background:rgba(167,139,250,.12);color:#a78bfa">Email</span>
+            <span class="nkc-arrow">↗</span>
+          </div>
+          <div class="node-kpi-chip" onclick="openKpiModal('email_ctr'); event.stopPropagation()">
+            <span class="nkc-icon">🖱️</span>
+            <span class="nkc-name">CTOR — Click-to-Open Rate en Email</span>
+            <span class="nkc-badge" style="background:rgba(167,139,250,.12);color:#a78bfa">Email</span>
+            <span class="nkc-arrow">↗</span>
+          </div>
+          <div class="node-kpi-chip" onclick="openKpiModal('unsubscribe'); event.stopPropagation()">
+            <span class="nkc-icon">📉</span>
+            <span class="nkc-name">Unsubscribe Rate — Tasa de Baja</span>
+            <span class="nkc-badge" style="background:rgba(251,191,36,.1);color:#fbbf24">Fricción</span>
+            <span class="nkc-arrow">↗</span>
+          </div>
+        </div>
+        <div class="kpi-arm kpi-l">
+          <div class="kpi-box">
+            <div class="kpi-name">Tasa de Apertura Email</div>
+            <div class="kpi-desc">Meta: &gt;30%. CTR al CTA indica eficacia del contenido. Tasa de baja &gt;1,5% alerta desajuste de perfil o exceso de frecuencia.</div>
+            <span class="kpi-level" style="background:rgba(167,139,250,.12);color:#a78bfa">Email</span>
+          </div>
+          <div class="kpi-dline"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ WF 2 ══ -->
+    <div class="wf-col wf2">
+      <div class="wf-col-hdr">
+        <span class="wf-tag">WF 2</span>
+        <div>
+          <div class="wf-col-title">Conversacional WhatsApp / ManyChat</div>
+          <div class="wf-col-sub">Landing Gracias → Bot → Segmentación → Objeciones → CTA Final</div>
+        </div>
+      </div>
+
+      <div class="bridge-note" style="margin-bottom:16px">← Gatillado al completar formulario de Landing Page (WF 1)</div>
+
+      <!-- LANDING GRACIAS -->
+      <div class="kpi-wrap">
+        <div class="node" onclick="openPanel('thank')" style="background:#111;border:1px solid rgba(34,211,238,.35);">
+          <div class="node-inner">
+            <div class="node-icon" style="background:rgba(34,211,238,.1);">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="18" rx="3" stroke="#22d3ee" stroke-width="1.5"/><path d="M2 7h20" stroke="#22d3ee" stroke-width="1.2"/><circle cx="5" cy="5" r="1" fill="#22d3ee"/><path d="M8 14l3 3 5-5" stroke="#22d3ee" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div>
+              <div class="node-label" style="color:#22d3ee">Landing de Gracias</div>
+              <div class="node-sub">Confirma registro · CTA directo a WhatsApp<br>Puerta de entrada al bot</div>
+            </div>
+          </div>
+          <div class="node-hint">Haz clic para explorar →</div>
+          <div class="node-kpi-divider"></div>
+          <div class="node-kpi-chip" onclick="openKpiModal('wa_start'); event.stopPropagation()">
+            <span class="nkc-icon">💬</span>
+            <span class="nkc-name">WA Initiation Rate — Inicio de Conversación WhatsApp</span>
+            <span class="nkc-badge" style="background:rgba(34,211,238,.1);color:#22d3ee">Captación</span>
+            <span class="nkc-arrow">↗</span>
+          </div>
+        </div>
+        <div class="kpi-arm kpi-r">
+          <div class="kpi-dline"></div>
+          <div class="kpi-box">
+            <div class="kpi-name">Inicio Conversación WhatsApp</div>
+            <div class="kpi-desc">% de usuarios que envían el primer mensaje tras llegar desde el anuncio o landing. Baja tasa = fricción en el CTA de la Thank You page.</div>
+            <span class="kpi-level" style="background:rgba(34,211,238,.1);color:#22d3ee">Captación</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="conn"><div class="conn-line" style="background:rgba(34,211,238,.3)"></div><div class="conn-lbl">CTA → WhatsApp</div><div class="conn-arrow" style="border-top-color:rgba(34,211,238,.4)"></div></div>
+
+      <!-- MANYCHAT -->
+      <div class="kpi-wrap">
+        <div class="node" onclick="openPanel('manychat')" style="background:#111;border:1px solid rgba(139,92,246,.45);">
+          <div class="node-inner">
+            <div class="node-icon" style="background:rgba(139,92,246,.12);">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M20 2H4a2 2 0 00-2 2v18l4-4h14a2 2 0 002-2V4a2 2 0 00-2-2z" stroke="#8b5cf6" stroke-width="1.5" fill="rgba(139,92,246,.15)"/><circle cx="8" cy="11" r="1.2" fill="#8b5cf6"/><circle cx="12" cy="11" r="1.2" fill="#8b5cf6"/><circle cx="16" cy="11" r="1.2" fill="#8b5cf6"/></svg>
+            </div>
+            <div>
+              <div class="node-label" style="color:#8b5cf6">ManyChat Bot</div>
+              <div class="node-sub">7 pasos · Califica y bifurca por perfil<br>Sincroniza tags con HubSpot</div>
+            </div>
+          </div>
+          <div class="node-hint">Haz clic para simular la conversación →</div>
+          <div class="node-kpi-divider"></div>
+          <div class="node-kpi-chip" onclick="openKpiModal('seg_response'); event.stopPropagation()">
+            <span class="nkc-icon">🎯</span>
+            <span class="nkc-name">Segmentation Response Rate — Respuesta a Pregunta de Segmentación</span>
+            <span class="nkc-badge" style="background:rgba(139,92,246,.12);color:#8b5cf6">Activación</span>
+            <span class="nkc-arrow">↗</span>
+          </div>
+        </div>
+        <div class="kpi-arm kpi-r">
+          <div class="kpi-dline"></div>
+          <div class="kpi-box">
+            <div class="kpi-name">Respuesta a Segmentación</div>
+            <div class="kpi-desc">Indica si el usuario está comprometido con el flujo. Abandono tras el saludo = flujo fallido. Señal crítica de calidad del lead captado.</div>
+            <span class="kpi-level" style="background:rgba(139,92,246,.12);color:#8b5cf6">Activación</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="conn"><div class="conn-line" style="background:rgba(139,92,246,.3)"></div><div class="conn-lbl">Pregunta de segmentación</div><div class="conn-arrow" style="border-top-color:rgba(139,92,246,.4)"></div></div>
+
+      <!-- BIFURCACION -->
+      <div class="kpi-wrap" style="max-width:340px">
+        <div style="width:100%;max-width:340px;margin-bottom:0">
+          <div style="font-size:9px;font-weight:700;letter-spacing:.6px;color:#555;text-transform:uppercase;text-align:center;margin-bottom:10px">Bifurcación por perfil declarado</div>
+          <div class="bif-row">
+            <div class="bif-node" onclick="openPanel('bif_token')" style="border-color:rgba(34,197,94,.3)">
+              <div class="bif-icon">💎</div>
+              <div class="bif-label" style="color:#4ade80">Token</div>
+              <div class="bif-sub">Conservador · diversificado</div>
+            </div>
+            <div class="bif-node" onclick="openPanel('bif_directa')" style="border-color:rgba(251,191,36,.3)">
+              <div class="bif-icon">🏭</div>
+              <div class="bif-label" style="color:#fbbf24">Directa</div>
+              <div class="bif-sub">Sofisticado · elige empresa</div>
+            </div>
+            <div class="bif-node" onclick="openPanel('bif_explore')" style="border-color:rgba(167,139,250,.3)">
+              <div class="bif-icon">🔍</div>
+              <div class="bif-label" style="color:#a78bfa">Exploración</div>
+              <div class="bif-sub">Sin perfil claro aún</div>
+            </div>
+          </div>
+        </div>
+        <div class="node-kpi-divider"></div>
+        <div class="node-kpi-chip kpi-gold" onclick="openKpiModal('avance'); event.stopPropagation()">
+          <span class="nkc-icon">⭐</span>
+          <span class="nkc-name">Flow Completion Rate — Tasa de Avance en el Flujo</span>
+          <span class="nkc-badge" style="background:rgba(234,179,8,.15);color:#eab308">Activación</span>
+          <span class="nkc-arrow">↗</span>
+        </div>
+        <div class="kpi-arm kpi-r">
+          <div class="kpi-dline"></div>
+          <div class="kpi-box">
+            <div class="kpi-name">Tasa de Avance en el Flujo</div>
+            <div class="kpi-desc">% que llega al CTA vs. los que ingresan al bot. Meta interna: &gt;50%. Cada bifurcación donde se pierde un lead es un punto de mejora del flujo.</div>
+            <span class="kpi-level" style="background:rgba(139,92,246,.12);color:#8b5cf6">Activación</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="conn" style="margin-top:8px"><div class="conn-line" style="background:rgba(251,191,36,.3)"></div><div class="conn-lbl">Continúa flujo</div><div class="conn-arrow" style="border-top-color:rgba(251,191,36,.4)"></div></div>
+
+      <!-- OBJECIONES -->
+      <div class="kpi-wrap">
+        <div class="node" onclick="openPanel('objeciones')" style="background:#111;border:1px solid rgba(251,191,36,.4);">
+          <div class="node-inner">
+            <div class="node-icon" style="background:rgba(251,191,36,.1);">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#fbbf24" stroke-width="1.5"/><path d="M12 8v4" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="16" r="1" fill="#fbbf24"/></svg>
+            </div>
+            <div>
+              <div class="node-label" style="color:#fbbf24">Módulo de Objeciones</div>
+              <div class="node-sub">Activado por palabras clave del usuario<br>riesgo · seguro · perder · banco · mora</div>
+            </div>
+          </div>
+          <div class="node-hint">Haz clic para ver los triggers →</div>
+          <div class="node-kpi-divider"></div>
+          <div class="node-kpi-chip" onclick="openKpiModal('obj_resolution'); event.stopPropagation()">
+            <span class="nkc-icon">🛡️</span>
+            <span class="nkc-name">Objection Resolution Rate — Tasa de Resolución de Objeciones</span>
+            <span class="nkc-badge" style="background:rgba(251,191,36,.1);color:#fbbf24">Activación</span>
+            <span class="nkc-arrow">↗</span>
+          </div>
+        </div>
+        <div class="kpi-arm kpi-r">
+          <div class="kpi-dline"></div>
+          <div class="kpi-box">
+            <div class="kpi-name">Resolución de Objeciones</div>
+            <div class="kpi-desc">Usuarios que continúan el flujo después de activar el módulo. Alta resolución = mensajes bien calibrados. Señal de interés real en el lead.</div>
+            <span class="kpi-level" style="background:rgba(251,191,36,.1);color:#fbbf24">Activación</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="conn"><div class="conn-line" style="background:rgba(74,222,128,.3)"></div><div class="conn-lbl">Conversión</div><div class="conn-arrow" style="border-top-color:rgba(74,222,128,.4)"></div></div>
+
+      <!-- CTA FINAL -->
+      <div class="kpi-wrap">
+        <div class="node" onclick="openPanel('cta_final')" style="background:#111;border:1px solid rgba(74,222,128,.4);">
+          <div class="node-inner">
+            <div class="node-icon" style="background:rgba(74,222,128,.1);">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L19 7" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div>
+              <div class="node-label" style="color:#4ade80">CTA Final</div>
+              <div class="node-sub">Registro gratuito · Explorar oportunidades<br>Empresa → Ejecutivo dedicado</div>
+            </div>
+          </div>
+          <div class="node-hint">Haz clic para explorar →</div>
+          <div class="node-kpi-divider"></div>
+          <div class="node-kpi-chip kpi-gold" onclick="openKpiModal('registro'); event.stopPropagation()">
+            <span class="nkc-icon">⭐</span>
+            <span class="nkc-name">CVR — Conversion Rate (Lead → Registro)</span>
+            <span class="nkc-badge" style="background:rgba(234,179,8,.15);color:#eab308">Conversión</span>
+            <span class="nkc-arrow">↗</span>
+          </div>
+          <div class="node-kpi-chip kpi-gold" onclick="openKpiModal('primera_inversion'); event.stopPropagation()">
+            <span class="nkc-icon">⭐</span>
+            <span class="nkc-name">FTI Rate — Primera Inversión Efectiva</span>
+            <span class="nkc-badge" style="background:rgba(234,179,8,.15);color:#eab308">Negocio ★</span>
+            <span class="nkc-arrow">↗</span>
+          </div>
+        </div>
+        <div class="kpi-arm kpi-r">
+          <div class="kpi-dline"></div>
+          <div class="kpi-box">
+            <div class="kpi-name">Tasa de Registro + ⭐ Primera Inversión</div>
+            <div class="kpi-desc">Registro: meta &gt;15%. Primera inversión efectiva = KPI estrella del negocio. Indicador de mayor valor estratégico: el funnel completo funcionó.</div>
+            <span class="kpi-level" style="background:rgba(74,222,128,.1);color:#4ade80">Conversión</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONNECTOR DOWN TO HUBSPOT CARD -->
+      <div class="conn" style="margin-top:8px"><div class="conn-line dash" style="background:none;height:36px"></div><div class="conn-lbl">Lead registrado → Perfil consolidado</div><div class="conn-arrow" style="border-top-color:rgba(255,106,0,.4)"></div></div>
+    </div>
+  </div>
+
+  <!-- HUBSPOT CLIENT CARD (spans full width) -->
+  <div class="hs-final-section">
+    <div class="hs-final-node" onclick="openPanel('hubspot_card')">
+      <div class="hs-final-hdr">
+        <div class="hs-final-icon">🏦</div>
+        <div>
+          <div class="hs-final-title">HubSpot — Perfil del Inversionista Registrado</div>
+          <div class="hs-final-sub">Tarjeta de cliente consolidada · Fuente única de verdad · Haz clic para ver el detalle completo</div>
+        </div>
+      </div>
+      <div class="hs-contact-grid">
+        <div class="hs-cf"><div class="hs-cf-lbl">Nombre</div><div class="hs-cf-val">Alejandro Torres</div></div>
+        <div class="hs-cf"><div class="hs-cf-lbl">Instrumento seleccionado</div><div class="hs-cf-val ok">En tokens (Index)</div></div>
+        <div class="hs-cf"><div class="hs-cf-lbl">Anuncio de origen</div><div class="hs-cf-val" style="color:#818cf8;font-family:monospace;font-size:11px">lead_ads_token</div></div>
+        <div class="hs-cf"><div class="hs-cf-lbl">Tags HubSpot</div><div class="hs-cf-tags"><span class="hs-cf-tag">lead_ads_token</span><span class="hs-cf-tag">perfil_conservador</span><span class="hs-cf-tag">lead_calificado</span><span class="hs-cf-tag">registrado</span></div></div>
+        <div class="hs-cf"><div class="hs-cf-lbl">Emails abiertos</div><div class="hs-cf-val">D0 ✓ · D2-Token ✓ · D5 ✗</div></div>
+        <div class="hs-cf"><div class="hs-cf-lbl">¿Realizó inversión?</div><div class="hs-cf-val warn">No — en evaluación</div></div>
+        <div class="hs-cf"><div class="hs-cf-lbl">¿Llegó a chat WA?</div><div class="hs-cf-val ok">Sí — completó flujo ManyChat</div></div>
+        <div class="hs-cf"><div class="hs-cf-lbl">Monto inicial declarado</div><div class="hs-cf-val">$500.000 CLP (chatbot)</div></div>
+        <div class="hs-cf"><div class="hs-cf-lbl">Lead Score</div><div class="hs-cf-val" style="color:#FF6A00;font-weight:700">65 pts</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:32px;font-size:10.5px;color:#333;letter-spacing:.3px">Haz clic en cualquier nodo o tarjeta para explorar el detalle completo</div>
+</main>
+
+<!-- PANEL -->
+<div id="panel">
+  <button class="panel-close" onclick="closePanel()">✕ cerrar</button>
+  <div class="panel-hdr">
+    <div class="panel-bar" id="pbar"></div>
+    <div class="panel-title" id="ptitle">—</div>
+    <div class="panel-sub" id="psub">—</div>
+  </div>
+  <div class="panel-body" id="pbody"></div>
+</div>
+
+<!-- KPI MODAL -->
+<div id="kpi-modal-ov" onclick="closeKpiModalOutside(event)">
+  <div class="kpi-modal-box">
+    <div class="kpi-mhdr">
+      <div>
+        <div id="km-acronym" style="font-size:11px;font-family:monospace;color:#FF6A00;margin-bottom:4px;letter-spacing:.5px"></div>
+        <div class="kpi-macro" id="km-title">—</div>
+      </div>
+      <div class="kpi-mhdr-meta">
+        <span id="km-star-badge" class="km-star-badge" style="display:none">⭐ KPI Estrella del Funnel</span>
+        <span id="km-level-badge" style="font-size:10px;font-weight:700;letter-spacing:.4px;padding:4px 12px;border-radius:5px"></span>
+        <button style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:#888;border-radius:6px;cursor:pointer;padding:5px 12px;font-size:12px" onclick="closeKpiModal()">✕ cerrar</button>
+      </div>
+    </div>
+    <div class="kpi-mbody">
+      <div class="km-left">
+        <div class="km-sec">Definición</div>
+        <div class="km-title" id="km-full-title">—</div>
+        <div class="km-desc" id="km-desc">—</div>
+        <div class="km-sec" style="margin-top:4px">Fórmula de medición</div>
+        <div class="km-formula" id="km-formula">—</div>
+        <div class="km-meta" id="km-meta">—</div>
+        <div class="km-sec">Por qué importa en este funnel</div>
+        <div class="km-why" id="km-why">—</div>
+      </div>
+      <div class="km-right">
+        <div class="km-sec">Etapas y nodos involucrados</div>
+        <div id="km-nodes"></div>
+        <div class="km-impact" id="km-impact-box">
+          <div class="km-impact-lbl">Señal de mejora</div>
+          <div id="km-impact"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div id="modal-ov" onclick="closeModalOutside(event)">
+  <div class="modal-box" id="modal-box">
+    <div class="modal-hdr">
+      <button class="modal-close" onclick="closeModal()">✕ cerrar</button>
+      <span class="m-badge" id="m-badge">—</span>
+      <div class="m-from" id="m-from">—</div>
+      <div class="m-subj" id="m-subj">—</div>
+    </div>
+    <div class="modal-segs" id="m-segs"></div>
+    <div class="modal-body" id="m-body"></div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   PANEL DATA
+═══════════════════════════════════════ */
+const PANELS = {
+
+meta: {
+  title: 'Anuncio META',
+  sub: 'Punto de entrada · WF 1 — Objetivo: Conversión',
+  color: '#818cf8',
+  html: `
+    <div class="p-sec">Vista previa del anuncio</div>
+    <div class="ad-mock">
+      <div class="ad-hdr">
+        <div class="ad-ava">C</div>
+        <div><div class="ad-page">Cumplo Inversionistas</div><div class="ad-spon">Patrocinado · 🌐</div></div>
+      </div>
+      <div class="ad-creative">
+        <svg class="ad-svg-bg" viewBox="0 0 400 170" preserveAspectRatio="none">
+          <polyline points="20,140 80,110 140,90 200,60 260,45 320,30 380,20" stroke="#4ade80" stroke-width="2" fill="none"/>
+          <polygon points="20,140 80,110 140,90 200,60 260,45 320,30 380,20 380,170 20,170" fill="url(#g1)"/>
+          <defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4ade80" stop-opacity=".3"/><stop offset="100%" stop-color="#4ade80" stop-opacity="0"/></linearGradient></defs>
+          <circle cx="380" cy="20" r="5" fill="#4ade80"/>
+          <circle cx="80" cy="150" r="18" fill="#FF6A00" fill-opacity=".25"/>
+          <circle cx="320" cy="130" r="10" fill="#818cf8" fill-opacity=".2"/>
+          <text x="200" y="155" text-anchor="middle" fill="rgba(255,255,255,0.12)" font-size="11" font-family="monospace">0,45% default · USD 3.300M financiados</text>
+        </svg>
+        <div class="ad-copy">
+          <div class="ad-hl">¿Tu plata está parada<br>en el banco?</div>
+          <div class="ad-sl">Hay una forma de hacerla trabajar por ti.<br>Empieza con poco más de $100.000</div>
+          <span class="ad-pill">Empresa B · LATAM</span>
+        </div>
+      </div>
+      <div class="ad-foot">
+        <div class="ad-dom">invierte.cumplo.com</div>
+        <div class="ad-fhl">Cumplo Inversionistas — Desde $100.000</div>
+        <div class="ad-fsl">Rentabilidad real. Empresas reales. Sin letra chica.</div>
+        <div class="ad-btns"><div class="ad-btn-p">Más información</div><div class="ad-btn-s">Enviar mensaje</div></div>
+      </div>
+      <div class="ad-react">👍 ❤️ <span>847 &nbsp;·&nbsp; 124 comentarios &nbsp;·&nbsp; 58 compartidos</span></div>
+    </div>
+    <div class="p-sec">Configuración de campaña</div>
+    <div class="seg-row"><div class="seg-dot"></div><div class="seg-txt"><strong>Objetivo:</strong> Conversión (registro en plataforma)</div></div>
+    <div class="seg-row"><div class="seg-dot"></div><div class="seg-txt"><strong>Formatos:</strong> Carrusel (educativo) + Reels (emocional)</div></div>
+    <div class="seg-row"><div class="seg-dot"></div><div class="seg-txt"><strong>Segmentación:</strong> Interés en inversión, finanzas personales, ahorro — 28 a 50 años, ciudades principales Chile</div></div>
+    <div class="seg-row"><div class="seg-dot"></div><div class="seg-txt"><strong>CTA Carrusel:</strong> → Landing Page (formulario)</div></div>
+    <div class="seg-row"><div class="seg-dot"></div><div class="seg-txt"><strong>CTA Reels:</strong> → WhatsApp directo (activa WF 2)</div></div>
+    <div class="p-div"></div>
+    <div class="p-sec">¿Por qué conversión y no reconocimiento?</div>
+    <div class="seg-row"><div class="seg-dot"></div><div class="seg-txt">El público objetivo ya tiene <strong>conciencia del problema</strong> (dinero inmovilizado, bajo rendimiento). No se necesita crear demanda — se necesita <strong>facilitar la acción</strong>. Campaña de reconocimiento dispersaría recursos innecesariamente.</div></div>
+  `
+},
+
+landing: {
+  title: 'Landing Page',
+  sub: 'Captura de lead · Fricción mínima · Un solo CTA',
+  color: '#4ade80',
+  html: `
+    <div class="p-sec">Vista previa — invierte.cumplo.com</div>
+    <div class="browser">
+      <div class="browser-bar">
+        <div class="b-dots"><div class="b-dot" style="background:#ff5f57"></div><div class="b-dot" style="background:#febc2e"></div><div class="b-dot" style="background:#28c840"></div></div>
+        <div class="b-url">🔒 invierte.cumplo.com</div>
+      </div>
+      <div class="lp">
+        <div class="lp-logo">Cumplo</div>
+        <div class="lp-hl">Tu dinero puede trabajar por ti.<br>Empieza con poco más de $100.000.</div>
+        <div class="lp-sl">Invierte en empresas reales. Rentabilidad transparente. Sin burocracia bancaria.</div>
+        <div class="lp-trust">
+          <div class="trust-item"><div class="trust-val">$3.300M</div><div class="trust-lbl">USD financiados</div></div>
+          <div class="trust-item"><div class="trust-val">0,45%</div><div class="trust-lbl">Default histórico</div></div>
+          <div class="trust-item"><div class="trust-val">+7.200</div><div class="trust-lbl">Pymes apoyadas</div></div>
+        </div>
+        <div class="lp-form">
+          <div class="lf-field"><label>Nombre</label><input class="lf-inp" type="text" placeholder="Tu nombre" value="Alejandro"></div>
+          <div class="lf-field"><label>Correo electrónico</label><input class="lf-inp" type="email" placeholder="correo@ejemplo.com" value="ale@gmail.com"></div>
+          <div class="lf-field"><label>Número de teléfono</label><input class="lf-inp" type="tel" placeholder="+56 9 XXXX XXXX" value="+56 9 8765 4321"></div>
+          <div class="lf-field"><label>¿En qué tipo de instrumento deseas invertir?</label><select class="lf-select"><option value="">Selecciona una opción...</option><option value="tokens" selected>En tokens</option><option value="directa">Empresas específicas</option><option value="explorar">No sé en qué instrumento invertir</option></select></div>
+          <button class="lf-btn" onclick="simulateSubmit()">Quiero invertir →</button>
+          <div class="lf-disc">Sin compromisos · Registro gratuito · Tu capital es tuyo</div>
+        </div>
+      </div>
+    </div>
+    <div class="p-sec">Decisiones de diseño (skill: auditoría landing)</div>
+    <div class="seg-row"><div class="seg-dot"></div><div class="seg-txt"><strong>Headline coincide con el anuncio:</strong> el usuario llega y ve lo que le prometieron → reduce bounce</div></div>
+    <div class="seg-row"><div class="seg-dot"></div><div class="seg-txt"><strong>4 campos estratégicos:</strong> nombre + correo + teléfono (activa WA) + instrumento (pre-segmenta en HubSpot sin esperar al chatbot)</div></div>
+    <div class="seg-row"><div class="seg-dot"></div><div class="seg-txt"><strong>Monto fuera del formulario:</strong> se captura en el chatbot para no generar abandono prematuro. Perfil enriquecido progresivamente.</div></div>
+    <div class="seg-row"><div class="seg-dot"></div><div class="seg-txt"><strong>Trust badges above the fold:</strong> $3.300M, 0,45%, +7.200 eliminan objeción de confianza antes de que aparezca</div></div>
+    <div class="seg-row"><div class="seg-dot"></div><div class="seg-txt"><strong>Risk reversal explícito:</strong> "Sin compromisos · Gratuito" — elimina percepción de riesgo al registrarse</div></div>
+    <div class="seg-row"><div class="seg-dot"></div><div class="seg-txt"><strong>Un solo CTA:</strong> "Quiero invertir →" — ningún enlace de navegación distrae la conversión</div></div>
+  `
+},
+
+hubspot: {
+  title: 'HubSpot CRM',
+  sub: 'Motor de automatización central · Fuente única de verdad',
+  color: '#FF6A00',
+  html: `
+    <div class="p-sec">Automatización de workflow</div>
+    <div class="hs-wf">
+      <div class="hs-wf-title">⚙️ Workflow: Nuevo Lead Inversionista</div>
+      <div class="hs-node"><div class="hs-ico" style="background:rgba(74,222,128,.15)">⚡</div><div class="hs-txt">Trigger: Formulario enviado<small>Landing Page — invierte.cumplo.com</small></div></div>
+      <div class="hs-line"></div>
+      <div class="hs-node"><div class="hs-ico" style="background:rgba(99,102,241,.15)">👤</div><div class="hs-txt">Crear/actualizar contacto en CRM<small>Nombre · Email · Origen (utm_source)</small></div></div>
+      <div class="hs-line"></div>
+      <div class="hs-node"><div class="hs-ico" style="background:rgba(255,106,0,.15)">🏷️</div><div class="hs-txt">Asignar tag por origen del anuncio<small>lead_ads_token ó lead_ads_directa</small></div></div>
+      <div class="hs-line"></div>
+      <div class="hs-node"><div class="hs-ico" style="background:rgba(251,191,36,.12)">◆</div><div class="hs-txt" style="color:#fbbf24">Decisión: ¿tag del perfil disponible?<small>Se completa en paso 4 del chatbot</small></div></div>
+      <div class="hs-line"></div>
+      <div class="hs-branch">
+        <div class="hs-branch-node"><span class="hs-bico">💎</span>Token<br><small style="color:#555">Email D2<br>variante A</small></div>
+        <div class="hs-branch-node"><span class="hs-bico">🏭</span>Directa<br><small style="color:#555">Email D2<br>variante B</small></div>
+        <div class="hs-branch-node"><span class="hs-bico">🔍</span>Explorac.<br><small style="color:#555">Email D2<br>genérico</small></div>
+      </div>
+      <div class="hs-line"></div>
+      <div class="hs-node"><div class="hs-ico" style="background:rgba(167,139,250,.15)">📧</div><div class="hs-txt">Encolar email D0 (inmediato) + D5 (día 5)<small>Condición de salida: si registrado=true → detener</small></div></div>
+    </div>
+    <div class="p-sec">Lead Scoring</div>
+    <div class="score-box">
+      <div class="score-row"><span class="score-act">Abre un email</span><span class="score-pts">+5 pts</span></div>
+      <div class="score-row"><span class="score-act">Clic en enlace del email</span><span class="score-pts">+10 pts</span></div>
+      <div class="score-row"><span class="score-act">Completa el chatbot</span><span class="score-pts">+15 pts</span></div>
+      <div class="score-row"><span class="score-act">Visita página de precios/tokens</span><span class="score-pts">+25 pts</span></div>
+      <div class="score-row"><span class="score-act">Activa módulo de objeciones</span><span class="score-pts">+10 pts</span></div>
+      <div class="score-thresh">
+        <p><strong>≥ 25 pts →</strong> Activar secuencia de conversión acelerada</p>
+        <p><strong>< 10 pts al día 3 →</strong> Pausa + re-engagement en 14 días</p>
+        <p><strong>Compra realizada →</strong> Eliminar de secuencia, iniciar onboarding</p>
+      </div>
+    </div>
+    <div class="p-sec">Tags de segmentación (8 tags definidos)</div>
+    <table class="tags-tbl">
+      <thead><tr><th>Tag</th><th>Criterio de asignación</th></tr></thead>
+      <tbody>
+        <tr><td>lead_ads_token</td><td>Lead desde anuncio orientado a tokens</td></tr>
+        <tr><td>lead_ads_directa</td><td>Lead desde anuncio orientado a inversión directa</td></tr>
+        <tr><td>perfil_conservador</td><td>Eligió Opción A (Token) en chatbot</td></tr>
+        <tr><td>perfil_sofisticado</td><td>Eligió Opción B (Inversión Directa) en chatbot</td></tr>
+        <tr><td>en_exploracion</td><td>Eligió Opción C (aún no tiene claro)</td></tr>
+        <tr><td>lead_calificado</td><td>Completó el flujo y llegó al CTA principal</td></tr>
+        <tr><td>registrado</td><td>Completó el registro en la plataforma</td></tr>
+        <tr><td>inversor_activo</td><td>Realizó al menos una inversión</td></tr>
+      </tbody>
+    </table>
+  `
+},
+
+email_seq: {
+  title: 'Secuencia de Email',
+  sub: 'Nutrición progresiva · D0 · D2 · D5 · HubSpot Workflows',
+  color: '#a78bfa',
+  html: `
+    <div class="p-sec">Principio aplicado (skill: campana-goteo)</div>
+    <div class="info-chip">📌 Cada email tiene un trabajo único. Ninguno vende y educa al mismo tiempo.</div>
+    <div class="p-sec">Emails de la secuencia — haz clic para ver el contenido completo</div>
+    <div class="email-card" onclick="openModal('d0')">
+      <span class="email-day" style="background:rgba(99,102,241,.15);color:#818cf8;border:1px solid rgba(99,102,241,.25)">Día 0 — Educación</span>
+      <div class="email-subj">Bienvenido/a a Cumplo — Te contamos todo en 3 minutos</div>
+      <div class="email-prev">Hola Alejandro, gracias por acercarte. Si llegaste aquí, probablemente te hiciste la misma pregunta que miles de personas: ¿hay una forma mejor de hacer crecer mi dinero que...</div>
+      <div class="email-footer">
+        <span class="email-seg">Todos los leads nuevos</span>
+        <span class="email-open">Ver email completo →</span>
+      </div>
+    </div>
+    <div class="email-card" onclick="openModal('d2_token')">
+      <span class="email-day" style="background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.25)">Día 2 — Historia · Perfil Token</span>
+      <div class="email-subj">Tu perfil inversor: Index Token o Puma Token — ¿cuál es para ti?</div>
+      <div class="email-prev">Basado en lo que nos dijiste, tenemos dos opciones de Tokens que se ajustan a lo que buscas. Sin complicaciones, sin elegir empresa por empresa...</div>
+      <div class="email-footer">
+        <span class="email-seg">perfil_conservador</span>
+        <span class="email-open">Ver email completo →</span>
+      </div>
+    </div>
+    <div class="email-card" onclick="openModal('d2_directa')">
+      <span class="email-day" style="background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.25)">Día 2 — Historia · Perfil Directa</span>
+      <div class="email-subj">Inversión directa en Cumplo: tú eliges, tú controlas</div>
+      <div class="email-prev">Para alguien que prefiere elegir activamente en qué empresas invertir, la inversión directa en Cumplo puede ser exactamente lo que estás buscando...</div>
+      <div class="email-footer">
+        <span class="email-seg">perfil_sofisticado</span>
+        <span class="email-open">Ver email completo →</span>
+      </div>
+    </div>
+    <div class="email-card" onclick="openModal('d5')">
+      <span class="email-day" style="background:rgba(255,106,0,.12);color:#FF6A00;border:1px solid rgba(255,106,0,.25)">Día 5 — Objeción + Venta</span>
+      <div class="email-subj">+7.200 pymes. USD 3.300M. ¿Y tu dinero aún en el banco?</div>
+      <div class="email-prev">Llevamos años siendo la plataforma de financiamiento colaborativo más grande de América Latina. Estos son los números que definen lo que hacemos...</div>
+      <div class="email-footer">
+        <span class="email-seg">Todos · no registrados</span>
+        <span class="email-open">Ver email completo →</span>
+      </div>
+    </div>
+    <div class="reactivation-box">
+      <p><strong>Flujo de reactivación (si no hay apertura al día 3):</strong><br>HubSpot detecta 0 aperturas → cambia asunto del email → reenvía con variante de contenido → si persiste: pausa 14 días → re-engagement con nuevo hook.</p>
+    </div>
+    <div class="p-div"></div>
+    <div class="p-sec">KPIs de email (metas referenciales fase piloto)</div>
+    <div class="seg-row"><div class="seg-dot"></div><div class="seg-txt">Tasa de apertura: <strong>> 30%</strong></div></div>
+    <div class="seg-row"><div class="seg-dot"></div><div class="seg-txt">CTR (clic al CTA): <strong>> 15%</strong></div></div>
+    <div class="seg-row"><div class="seg-dot"></div><div class="seg-txt">Tasa de baja: alerta si supera <strong>1,5%</strong></div></div>
+  `
+},
+
+thank: {
+  title: 'Landing de Gracias',
+  sub: 'WF 2 — Puerta de entrada al chatbot de WhatsApp',
+  color: '#22d3ee',
+  html: `
+    <div class="p-sec">Vista previa de la página</div>
+    <div class="ty-mock">
+      <div class="ty-icon">🎉</div>
+      <div class="ty-title">¡Listo, Alejandro!</div>
+      <div class="ty-sub">Tus datos están guardados. Para darte la mejor experiencia personalizada y responder todas tus dudas, te esperamos en WhatsApp.</div>
+      <button class="wsp-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M17.5 14.4l-2.5-.7c-.3-.1-.7 0-.9.3l-1 1.2c-2-1-3.8-2.8-4.8-4.8l1.2-1c.3-.2.4-.6.3-.9l-.7-2.5C8.9 5.7 8.4 5.3 7.8 5.3H6c-.7 0-1.3.6-1.2 1.3.5 4.1 3.7 7.4 7.8 8.2.6.1 1.2-.4 1.2-1v-1.4c0-.6-.4-1.1-1-1z"/></svg>
+        Continuar por WhatsApp
+      </button>
+    </div>
+    <div class="p-sec">Lógica de este paso</div>
+    <div class="seg-row"><div class="seg-dot" style="background:#22d3ee"></div><div class="seg-txt">Este CTA abre WhatsApp con un mensaje pre-cargado que activa el bot de ManyChat</div></div>
+    <div class="seg-row"><div class="seg-dot" style="background:#22d3ee"></div><div class="seg-txt">El WF 2 corre <strong>en paralelo</strong> al WF 1 — no hay que esperar la secuencia de email</div></div>
+    <div class="seg-row"><div class="seg-dot" style="background:#22d3ee"></div><div class="seg-txt">HubSpot registra el evento "Llegó a landing de gracias" → +5 pts de lead scoring</div></div>
+    <div class="seg-row"><div class="seg-dot" style="background:#22d3ee"></div><div class="seg-txt">Si el usuario no hace clic en WhatsApp, el WF 1 continúa solo con email</div></div>
+  `
+},
+
+manychat: {
+  title: 'ManyChat Chatbot',
+  sub: 'WhatsApp · 7 pasos · Califica · Bifurca · Sincroniza HubSpot',
+  color: '#8b5cf6',
+  html: `
+    <div class="p-sec">Simulación del flujo conversacional</div>
+    <div class="score-live"><span>Lead Score en tiempo real</span><strong id="live-score">0 pts</strong></div>
+    <div class="chat-wrap">
+      <div class="chat-head">
+        <div class="chat-ava">C</div>
+        <div><div class="chat-name">Cumplo Inversionistas</div><div class="chat-status">● En línea</div></div>
+      </div>
+      <div class="chat-msgs" id="chat-msgs"></div>
+      <div class="chat-opts" id="chat-opts"></div>
+    </div>
+    <div id="chat-cta-area"></div>
+    <div class="chat-input-row">
+      <input type="text" id="chat-text-inp" class="chat-inp" placeholder="Escribe tu mensaje... (ej: riesgo, token, registrarme)">
+      <button class="chat-send" onclick="handleChatText()">Enviar →</button>
+    </div>
+    <div class="chat-kwinfo">💡 Palabras clave detectadas: <strong>riesgo · seguro · banco · mínimo · token · directa · registrar · explorar</strong></div>
+    <div class="p-sec">Sobre el flujo (7 pasos del informe)</div>
+    <div class="seg-row"><div class="seg-dot" style="background:#8b5cf6"></div><div class="seg-txt"><strong>Paso 1:</strong> Punto de entrada desde anuncio Meta o Landing de Gracias</div></div>
+    <div class="seg-row"><div class="seg-dot" style="background:#8b5cf6"></div><div class="seg-txt"><strong>Paso 2:</strong> Hook inicial — bienvenida + pregunta de apertura</div></div>
+    <div class="seg-row"><div class="seg-dot" style="background:#8b5cf6"></div><div class="seg-txt"><strong>Paso 3:</strong> Pregunta de segmentación (Token / Directa / Exploración)</div></div>
+    <div class="seg-row"><div class="seg-dot" style="background:#8b5cf6"></div><div class="seg-txt"><strong>Paso 4:</strong> Presentación del producto según perfil seleccionado</div></div>
+    <div class="seg-row"><div class="seg-dot" style="background:#8b5cf6"></div><div class="seg-txt"><strong>Paso 5:</strong> Módulo de objeciones (activado por palabras clave)</div></div>
+    <div class="seg-row"><div class="seg-dot" style="background:#8b5cf6"></div><div class="seg-txt"><strong>Paso 6:</strong> CTA → Registro / Explorar / Ejecutivo empresa</div></div>
+    <div class="seg-row"><div class="seg-dot" style="background:#8b5cf6"></div><div class="seg-txt"><strong>Paso 7:</strong> Continuación por email — secuencia HubSpot D0/D2/D5</div></div>
+  `
+},
+
+bif_token: {
+  title: 'Ruta: Perfil Token',
+  sub: 'Conservador · perfil_conservador · Diversificado automático',
+  color: '#4ade80',
+  html: `
+    <div class="p-sec">Tag asignado en HubSpot</div>
+    <div class="tag-wrap"><span class="tag">perfil_conservador</span><span class="tag">lead_calificado</span></div>
+    <div class="p-sec">Productos presentados</div>
+    <div class="profile-card">
+      <h4>💎 Index Token</h4>
+      <div class="sub">Diversificado · Liquidez diaria (desde día 30)</div>
+      <div class="stat-row"><span class="stat-k">Rentabilidad acumulada</span><span class="stat-v hi">7,38%</span></div>
+      <div class="stat-row"><span class="stat-k">Período</span><span class="stat-v">Abr 2024 – Feb 2026</span></div>
+      <div class="stat-row"><span class="stat-k">Liquidez</span><span class="stat-v">Diaria desde día 30</span></div>
+      <div class="stat-row"><span class="stat-k">Inversión mínima</span><span class="stat-v">~$100.000 CLP</span></div>
+      <div class="stat-row"><span class="stat-k">Perfil ideal</span><span class="stat-v">Quiere simplicidad y acceso al capital</span></div>
+    </div>
+    <div class="profile-card">
+      <h4>🦁 Puma Token</h4>
+      <div class="sub">Diversificado · Mayor rentabilidad · Liquidez trimestral</div>
+      <div class="stat-row"><span class="stat-k">Rentabilidad acumulada</span><span class="stat-v hi">8,41%</span></div>
+      <div class="stat-row"><span class="stat-k">Liquidez</span><span class="stat-v">Trimestral</span></div>
+      <div class="stat-row"><span class="stat-k">Inversión mínima</span><span class="stat-v">~$100.000 CLP</span></div>
+      <div class="stat-row"><span class="stat-k">Perfil ideal</span><span class="stat-v">No necesita capital en corto plazo</span></div>
+    </div>
+    <div class="p-sec">Por qué esta ruta</div>
+    <div class="seg-row"><div class="seg-dot"></div><div class="seg-txt">El perfil conservador tiene mayor tolerancia al riesgo bajo y valora la diversificación automática. No quiere seleccionar empresa por empresa.</div></div>
+    <div class="seg-row"><div class="seg-dot"></div><div class="seg-txt">El email D2 enviado desde HubSpot usa la <strong>variante Token</strong> con los números exactos del Index y Puma Token.</div></div>
+  `
+},
+
+bif_directa: {
+  title: 'Ruta: Perfil Inversión Directa',
+  sub: 'Sofisticado · perfil_sofisticado · Selección activa de empresas',
+  color: '#fbbf24',
+  html: `
+    <div class="p-sec">Tag asignado en HubSpot</div>
+    <div class="tag-wrap"><span class="tag">perfil_sofisticado</span><span class="tag">lead_calificado</span></div>
+    <div class="p-sec">Características del producto</div>
+    <div class="profile-card" style="border-color:rgba(251,191,36,.2)">
+      <h4>🏭 Inversión Directa en Solicitudes</h4>
+      <div class="sub">Tú eliges · Mayor control · Mayor potencial de retorno</div>
+      <div class="stat-row"><span class="stat-k">Tipos de solicitud</span><span class="stat-v">Anticipo factura · Capital de trabajo</span></div>
+      <div class="stat-row"><span class="stat-k">Tasas anuales</span><span class="stat-v hi">12,5% – 21%</span></div>
+      <div class="stat-row"><span class="stat-k">Plazos</span><span class="stat-v">15 a 186 días</span></div>
+      <div class="stat-row"><span class="stat-k">Diversificación</span><span class="stat-v">Manual — el inversionista elige</span></div>
+      <div class="stat-row"><span class="stat-k">Riesgo</span><span class="stat-v" style="color:#fbbf24">Mayor — requiere tolerancia</span></div>
+    </div>
+    <div class="p-sec">Manejo del riesgo en el flujo</div>
+    <div class="seg-row"><div class="seg-dot" style="background:#fbbf24"></div><div class="seg-txt">Cumplo comunica el riesgo de manera transparente. El bot menciona la posibilidad de pérdida parcial y recomienda diversificar entre múltiples solicitudes.</div></div>
+    <div class="seg-row"><div class="seg-dot" style="background:#fbbf24"></div><div class="seg-txt">El email D2 (variante Directa) explica el proceso paso a paso y muestra ejemplos de oportunidades activas con tasas y plazos reales.</div></div>
+    <div class="seg-row"><div class="seg-dot" style="background:#fbbf24"></div><div class="seg-txt">Default histórico de la plataforma: <strong>0,45%</strong> — dato que resuelve la objeción de riesgo más común.</div></div>
+  `
+},
+
+bif_explore: {
+  title: 'Ruta: Perfil en Exploración',
+  sub: 'Sin perfil claro · en_exploracion · Educación antes de segmentar',
+  color: '#a78bfa',
+  html: `
+    <div class="p-sec">Tag asignado en HubSpot</div>
+    <div class="tag-wrap"><span class="tag">en_exploracion</span></div>
+    <div class="p-sec">Contenido del bot para este perfil</div>
+    <div class="chat-wrap" style="margin-bottom:14px">
+      <div class="chat-msgs" style="max-height:none;padding:12px">
+        <div class="msg bot">Sin problema 🙂 Te explico cómo funciona el modelo de Cumplo en pocas palabras.</div>
+        <div class="msg bot">Cumplo conecta <strong>inversionistas</strong> (tú) con <strong>empresas reales</strong> que necesitan capital para crecer. Tú pones el dinero, la empresa lo usa para operar, y te lo devuelve con intereses en el plazo acordado.</div>
+        <div class="msg bot">Tenemos dos caminos: los <strong>Tokens</strong> (diversificado, simple, tú no eliges empresa) y la <strong>Inversión Directa</strong> (tú eliges en qué empresa invertir). ¿Cuál suena más como lo que buscas?</div>
+      </div>
+    </div>
+    <div class="p-sec">Estrategia para este perfil</div>
+    <div class="seg-row"><div class="seg-dot" style="background:#a78bfa"></div><div class="seg-txt">No se fuerza una decisión prematura. El bot educa primero y luego redirige naturalmente a la opción Token o Directa.</div></div>
+    <div class="seg-row"><div class="seg-dot" style="background:#a78bfa"></div><div class="seg-txt">El email D2 enviado es una <strong>versión genérica</strong> que explica ambas opciones y deja que el usuario elija al hacer clic.</div></div>
+    <div class="seg-row"><div class="seg-dot" style="background:#a78bfa"></div><div class="seg-txt">El lead scoring es menor para este perfil — HubSpot lo trata con mayor cuidado y cadencia más espaciada.</div></div>
+  `
+},
+
+objeciones: {
+  title: 'Módulo de Objeciones',
+  sub: 'Activado por palabras clave · Respuestas automáticas calibradas',
+  color: '#fbbf24',
+  html: `
+    <div class="p-sec">Trigger: palabras clave detectadas por ManyChat</div>
+    <div class="info-chip">🔍 El bot monitorea cada mensaje del usuario. Al detectar estas palabras, interrumpe el flujo y entrega la respuesta correspondiente.</div>
+    <div class="p-sec">Objeciones y respuestas</div>
+    <div class="obj-card">
+      <div class="obj-trigger">Trigger: <span class="obj-kw">riesgo</span><span class="obj-kw">perder</span><span class="obj-kw">mora</span><span class="obj-kw">quiebra</span></div>
+      <div class="obj-resp">«Toda inversión tiene riesgo, y en Cumplo lo decimos claramente. Por eso recomendamos comenzar con los Tokens, que diversifican automáticamente entre muchas empresas. Nuestro default histórico es del <strong>0,45%</strong> y contamos con un equipo de cobranza que gestiona cada caso. Puedes revisar todo en nuestra sección de Términos y Condiciones.»</div>
+    </div>
+    <div class="obj-card">
+      <div class="obj-trigger">Trigger: <span class="obj-kw">seguro</span><span class="obj-kw">datos</span><span class="obj-kw">privacidad</span><span class="obj-kw">registrarme</span></div>
+      <div class="obj-resp">«Tu registro es gratuito y sin compromisos. Solo necesitas tu RUT y un correo. Puedes explorar todas las oportunidades disponibles sin invertir nada hasta que te sientas listo/a. Tus datos están protegidos bajo nuestra política de privacidad.»</div>
+    </div>
+    <div class="obj-card">
+      <div class="obj-trigger">Trigger: <span class="obj-kw">banco</span><span class="obj-kw">AFP</span><span class="obj-kw">diferencia</span><span class="obj-kw">comparar</span></div>
+      <div class="obj-resp">«A diferencia de un banco, en Cumplo tú eliges directamente en qué proyectos invertir y ves en tiempo real cómo rinde tu dinero. Las tasas son significativamente mayores que un depósito a plazo tradicional, con total transparencia sobre cada operación.»</div>
+    </div>
+    <div class="obj-card">
+      <div class="obj-trigger">Trigger: <span class="obj-kw">mínimo</span><span class="obj-kw">cuánto</span><span class="obj-kw">poco</span><span class="obj-kw">dinero</span></div>
+      <div class="obj-resp">«Puedes empezar con poco más de $100.000 pesos chilenos a través de nuestros Tokens. No necesitas grandes sumas para comenzar a invertir de forma diversificada y segura.»</div>
+    </div>
+    <div class="p-div"></div>
+    <div class="p-sec">Después de la respuesta</div>
+    <div class="seg-row"><div class="seg-dot" style="background:#fbbf24"></div><div class="seg-txt">El bot retoma el flujo desde donde fue interrumpido</div></div>
+    <div class="seg-row"><div class="seg-dot" style="background:#fbbf24"></div><div class="seg-txt">Se asigna <strong>+10 pts</strong> de lead scoring (usuario comprometido)</div></div>
+    <div class="seg-row"><div class="seg-dot" style="background:#fbbf24"></div><div class="seg-txt">El evento queda registrado en HubSpot para personalizar emails futuros</div></div>
+  `
+},
+
+cta_final: {
+  title: 'CTA Final',
+  sub: 'Conversión última · Registro · Explorar · Ejecutivo empresa',
+  color: '#4ade80',
+  html: `
+    <div class="p-sec">Ruta A — Inversionista</div>
+    <div class="cta-card">
+      <h4>🚀 Registro gratuito en Cumplo</h4>
+      <p>El usuario completó el flujo, tiene perfil asignado y está listo para registrarse. CTA único, sin fricción adicional.</p>
+      <div class="cta-btns">
+        <button class="btn-prim">Registrarme gratis →</button>
+        <button class="btn-sec">Explorar sin registrarme</button>
+      </div>
+    </div>
+    <div class="p-sec">Ruta B — Empresa que necesita financiamiento</div>
+    <div class="exec-card">
+      <div class="exec-ava">CM</div>
+      <div><div class="exec-name">Carlos Méndez</div><div class="exec-role">Ejecutivo Cumplo Empresas · Responde en &lt;2h</div></div>
+    </div>
+    <div class="cta-card" style="border-color:rgba(251,191,36,.15)">
+      <h4>🏢 Financiar mi empresa</h4>
+      <p>El bot detecta que el usuario quiere financiamiento (no inversión). Pausa la automatización y transfiere al ejecutivo humano con el contexto completo del caso.</p>
+      <div class="cta-btns">
+        <button class="btn-prim" style="background:#fbbf24;color:#000">Hablar con ejecutivo →</button>
+      </div>
+    </div>
+    <div class="p-div"></div>
+    <div class="p-sec">KPIs de conversión (metas referenciales)</div>
+    <table class="kpi-tbl">
+      <thead><tr><th>Indicador</th><th>Meta referencial</th><th>Tipo</th></tr></thead>
+      <tbody>
+        <tr><td>CTR del anuncio</td><td>—</td><td><span class="kpi-lv" style="background:rgba(99,102,241,.12);color:#818cf8">Captación</span></td></tr>
+        <tr><td>Inicio conversación WA</td><td>—</td><td><span class="kpi-lv" style="background:rgba(99,102,241,.12);color:#818cf8">Captación</span></td></tr>
+        <tr><td>Avance completo flujo bot</td><td>&gt; 50%</td><td><span class="kpi-lv" style="background:rgba(251,191,36,.1);color:#fbbf24">Activación</span></td></tr>
+        <tr><td>Tasa de registro</td><td>&gt; 15%</td><td><span class="kpi-lv" style="background:rgba(255,106,0,.12);color:#FF6A00">Conversión</span></td></tr>
+        <tr><td>Primera inversión efectiva</td><td>KPI estrella</td><td><span class="kpi-lv" style="background:rgba(74,222,128,.1);color:#4ade80">Negocio</span></td></tr>
+      </tbody>
+    </table>
+  `
+},
+
+meta_token: {
+  title: 'Anuncio META — lead_ads_token',
+  sub: 'Perfil conservador · Tokens · Carrusel educativo',
+  color: '#818cf8',
+  html: `
+    <div class="p-sec">Vista previa del anuncio</div>
+    <div class="ad-mock">
+      <div class="ad-hdr">
+        <div class="ad-ava">C</div>
+        <div><div class="ad-page">Cumplo Inversionistas</div><div class="ad-spon">Patrocinado · 🌐</div></div>
+      </div>
+      <div class="ad-creative">
+        <svg class="ad-svg-bg" viewBox="0 0 400 170" preserveAspectRatio="none">
+          <circle cx="80" cy="85" r="55" fill="none" stroke="#818cf8" stroke-opacity=".3" stroke-width="1.5"/>
+          <circle cx="200" cy="60" r="40" fill="none" stroke="#a78bfa" stroke-opacity=".25" stroke-width="1"/>
+          <circle cx="320" cy="95" r="60" fill="none" stroke="#818cf8" stroke-opacity=".2" stroke-width="1"/>
+          <circle cx="80" cy="85" r="25" fill="#818cf8" fill-opacity=".08"/>
+          <text x="80" y="89" text-anchor="middle" fill="rgba(129,140,248,.7)" font-size="10" font-family="monospace">7,38%</text>
+          <circle cx="200" cy="60" r="18" fill="#a78bfa" fill-opacity=".08"/>
+          <text x="200" y="64" text-anchor="middle" fill="rgba(167,139,250,.7)" font-size="10" font-family="monospace">8,41%</text>
+          <text x="200" y="155" text-anchor="middle" fill="rgba(255,255,255,0.1)" font-size="10" font-family="monospace">Diversificado automático · Desde $100.000</text>
+        </svg>
+        <div class="ad-copy">
+          <div class="ad-hl">¿Quieres que tu dinero<br>crezca solo?</div>
+          <div class="ad-sl">Index Token: 7,38% acumulado. Liquidez diaria.<br>Diversificado. Sin elegir empresa por empresa.</div>
+          <span class="ad-pill">💎 Desde $100.000 CLP</span>
+        </div>
+      </div>
+      <div class="ad-foot">
+        <div class="ad-dom">invierte.cumplo.com</div>
+        <div class="ad-fhl">Cumplo Tokens — Simple, diversificado, tuyo</div>
+        <div class="ad-fsl">Sin complicaciones. Sin letra chica. Empresa B.</div>
+        <div class="ad-btns"><div class="ad-btn-p">Más información</div><div class="ad-btn-s">Enviar mensaje</div></div>
+      </div>
+      <div class="ad-react">👍 ❤️ <span>1.203 &nbsp;·&nbsp; 89 comentarios &nbsp;·&nbsp; 41 compartidos</span></div>
+    </div>
+    <div class="p-sec">Configuración de campaña</div>
+    <div class="seg-row"><div class="seg-dot"></div><div class="seg-txt"><strong>Tag asignado:</strong> <span style="color:#818cf8;font-family:monospace">lead_ads_token</span></div></div>
+    <div class="seg-row"><div class="seg-dot"></div><div class="seg-txt"><strong>Objetivo:</strong> Conversión (registro en plataforma)</div></div>
+    <div class="seg-row"><div class="seg-dot"></div><div class="seg-txt"><strong>Formato:</strong> Carrusel educativo (3 tarjetas: qué es, cómo funciona, cuánto rinde)</div></div>
+    <div class="seg-row"><div class="seg-dot"></div><div class="seg-txt"><strong>Segmentación:</strong> Perfil conservador — interés en ahorro, fondos mutuos, DAP, finanzas personales</div></div>
+    <div class="seg-row"><div class="seg-dot"></div><div class="seg-txt"><strong>CTA:</strong> → Landing Page invierte.cumplo.com (formulario con select Token preseleccionado)</div></div>
+  `
+},
+
+hubspot_card: {
+  title: 'HubSpot — Perfil del Inversionista Registrado',
+  sub: 'Tarjeta de cliente consolidada · Datos del journey completo',
+  color: '#FF6A00',
+  html: `
+    <div class="p-sec">Ficha de contacto — CRM HubSpot</div>
+    <div class="info-chip">📋 Este perfil se construye progresivamente a medida que el lead avanza por ambos workflows (WF1 + WF2).</div>
+    <div class="p-div"></div>
+    <div class="p-sec">Datos de identidad</div>
+    <div class="seg-row"><div class="seg-dot"></div><div class="seg-txt"><strong>Nombre:</strong> Alejandro Torres</div></div>
+    <div class="seg-row"><div class="seg-dot"></div><div class="seg-txt"><strong>Correo:</strong> alejandro@gmail.com</div></div>
+    <div class="seg-row"><div class="seg-dot"></div><div class="seg-txt"><strong>Teléfono:</strong> +56 9 8765 4321</div></div>
+    <div class="p-sec">Datos de inversión (perfil progresivo)</div>
+    <div class="seg-row"><div class="seg-dot"></div><div class="seg-txt"><strong>Instrumento de interés:</strong> <span style="color:#4ade80">En tokens (Index Token)</span> — declarado en formulario landing</div></div>
+    <div class="seg-row"><div class="seg-dot"></div><div class="seg-txt"><strong>Monto inicial:</strong> $500.000 CLP — declarado en chatbot (Paso 4 del bot, no en formulario)</div></div>
+    <div class="p-sec">Tags asignados</div>
+    <div class="tag-wrap">
+      <span class="tag">lead_ads_token</span>
+      <span class="tag">perfil_conservador</span>
+      <span class="tag">lead_calificado</span>
+      <span class="tag">registrado</span>
+    </div>
+    <div class="p-sec">Origen y trazabilidad</div>
+    <div class="seg-row"><div class="seg-dot"></div><div class="seg-txt"><strong>Anuncio de origen:</strong> <span style="color:#818cf8;font-family:monospace">lead_ads_token</span> — Carrusel Index Token</div></div>
+    <div class="seg-row"><div class="seg-dot"></div><div class="seg-txt"><strong>UTM source:</strong> meta_ads · medium: paid_social · campaign: token_conservador</div></div>
+    <div class="p-sec">Engagement en secuencia de email</div>
+    <div class="score-box">
+      <div class="score-row"><span class="score-act">Email D0 — Bienvenida y contexto</span><span class="score-pts" style="color:#4ade80">✓ Abierto</span></div>
+      <div class="score-row"><span class="score-act">Email D2 — Index Token / Puma Token</span><span class="score-pts" style="color:#4ade80">✓ Abierto + clic</span></div>
+      <div class="score-row"><span class="score-act">Email D5 — Prueba social + CTA final</span><span class="score-pts" style="color:#f87171">✗ No abierto</span></div>
+    </div>
+    <div class="p-sec">Estado de conversión</div>
+    <div class="seg-row"><div class="seg-dot" style="background:#fbbf24"></div><div class="seg-txt"><strong>¿Realizó inversión?</strong> <span style="color:#fbbf24">No — en evaluación activa</span> · HubSpot activa re-engagement D7</div></div>
+    <div class="seg-row"><div class="seg-dot" style="background:#4ade80"></div><div class="seg-txt"><strong>¿Llegó a conversación WA?</strong> <span style="color:#4ade80">Sí — completó flujo ManyChat</span> (7 pasos, llegó al CTA)</div></div>
+    <div class="p-sec">Lead Score total</div>
+    <div class="score-box">
+      <div class="score-row"><span class="score-act">Abrió email D0</span><span class="score-pts">+5 pts</span></div>
+      <div class="score-row"><span class="score-act">Clic en email D2</span><span class="score-pts">+10 pts</span></div>
+      <div class="score-row"><span class="score-act">Completó chatbot</span><span class="score-pts">+15 pts</span></div>
+      <div class="score-row"><span class="score-act">Llegó al CTA final</span><span class="score-pts">+25 pts</span></div>
+      <div class="score-row"><span class="score-act" style="font-weight:700;color:#FF6A00">TOTAL</span><span class="score-pts" style="font-size:15px;color:#FF6A00">65 pts</span></div>
+    </div>
+    <div class="score-thresh">
+      <p><strong>Próxima acción automática HubSpot:</strong> Re-engagement D7 con asunto alternativo en email D5 · Si abre → notificar ejecutivo · Si no → pausa 14 días</p>
+    </div>
+  `
+}
+};
+
+/* ═══════════════════════════════════════
+   EMAIL MODAL DATA
+═══════════════════════════════════════ */
+const EMAILS = {
+d0: {
+  badge: 'Día 0 — Email de Educación',
+  badgeColor: '#818cf8',
+  from: '<strong>Cumplo Inversionistas</strong> &lt;hola@cumplo.com&gt;',
+  subject: 'Bienvenido/a a Cumplo — Te contamos todo en 3 minutos',
+  segs: ['Todos los leads nuevos', 'lead_ads_token / lead_ads_directa'],
+  body: `
+    <div class="seg-chip">📌 Objetivo: Educación — Sin CTA de venta. Entregar valor puro.</div>
+    <div class="email-txt">
+      <p>Hola Alejandro,</p>
+      <p>Gracias por acercarte a Cumplo. Si llegaste aquí, probablemente te hiciste la misma pregunta que miles de personas: <span class="hi">¿hay una forma mejor de hacer crecer mi dinero que dejarlo parado en el banco?</span></p>
+      <p>Sí, la hay.</p>
+      <h3>¿Qué es Cumplo?</h3>
+      <p>Cumplo es la plataforma líder de financiamiento colaborativo en América Latina. Lo que hacemos es simple: conectamos a personas como tú —que quieren hacer rendir su dinero— con empresas reales que necesitan capital para crecer.</p>
+      <h3>¿Cómo funciona en 3 pasos?</h3>
+      <ul>
+        <li>Tú inviertes en una empresa o en un fondo diversificado (token)</li>
+        <li>Esa empresa usa el capital para operar, y te lo devuelve con intereses en el plazo acordado</li>
+        <li>Tú cobras y decides: reinvertir o retirar</li>
+      </ul>
+      <h3>¿Qué hace diferente a Cumplo del banco?</h3>
+      <ul>
+        <li>Tasa de default histórica: solo <span class="hi">0,45%</span></li>
+        <li>Más de <span class="hi">USD 3.300 millones</span> financiados</li>
+        <li>+<span class="hi">7.200 pymes</span> apoyadas · +200.000 operaciones completadas</li>
+        <li>Puedes empezar con <span class="hi">poco más de $100.000 pesos</span></li>
+        <li>Empresa B — el propósito importa</li>
+      </ul>
+      <p>Este primer correo es solo para que nos conozcas. <strong>No tienes que hacer nada todavía.</strong></p>
+      <p>En los próximos días te compartiremos la opción que mejor se adapta a tu perfil.</p>
+      <hr>
+      <p class="foot">Con gusto,<br>El equipo de Cumplo Inversionistas<br><small>Si no quieres recibir más correos, puedes darte de baja aquí.</small></p>
+    </div>
+  `
+},
+d2_token: {
+  badge: 'Día 2 — Email de Historia · Perfil Token',
+  badgeColor: '#4ade80',
+  from: '<strong>Cumplo Inversionistas</strong> &lt;hola@cumplo.com&gt;',
+  subject: 'Tu perfil inversor: Index Token o Puma Token — ¿cuál es para ti?',
+  segs: ['perfil_conservador', 'lead_ads_token'],
+  body: `
+    <div class="seg-chip">📌 Objetivo: Historia/Perfil — Mostrar el producto exacto. CTA suave.</div>
+    <div class="email-txt">
+      <p>Hola Alejandro,</p>
+      <p>Basado en lo que nos dijiste, tenemos dos opciones de Tokens que se ajustan a lo que buscas: <span class="hi">simplicidad, diversificación y sin tener que elegir empresa por empresa.</span></p>
+      <h3>💎 Index Token</h3>
+      <ul>
+        <li><strong>Rentabilidad acumulada:</strong> <span class="hi">7,38%</span> (abril 2024 – febrero 2026)</li>
+        <li><strong>Liquidez:</strong> Diaria, disponible desde el día 30</li>
+        <li><strong>Mínimo:</strong> Desde ~$100.000 pesos</li>
+        <li><strong>Ideal para:</strong> Quien quiere acceso al capital con cierta regularidad</li>
+      </ul>
+      <h3>🦁 Puma Token</h3>
+      <ul>
+        <li><strong>Rentabilidad acumulada:</strong> <span class="hi">8,41%</span></li>
+        <li><strong>Liquidez:</strong> Trimestral</li>
+        <li><strong>Ideal para:</strong> Quien no necesita el capital en el corto plazo y busca mayor rentabilidad</li>
+      </ul>
+      <h3>¿Cómo funcionan los Tokens?</h3>
+      <p>En lugar de elegir una sola empresa, el Token distribuye tu inversión automáticamente entre múltiples solicitudes activas. Más diversificación, mismo esfuerzo para ti: <strong>cero</strong>.</p>
+      <p>¿Cuánto podrías ganar si invirtieras <span class="hi">$500.000</span> hoy? Con el Index Token y un rendimiento como el acumulado, estarías hablando de aproximadamente <span class="hi">$536.900</span> en un año.</p>
+      <div class="cta-blk">Quiero ver el Index Token →</div>
+      <span class="sec-lnk">Explorar el Puma Token</span>
+      <hr>
+      <p class="foot">Cumplo · invierte.cumplo.com · Si no quieres recibir más correos, puedes darte de baja.</p>
+    </div>
+  `
+},
+d2_directa: {
+  badge: 'Día 2 — Email de Historia · Perfil Directa',
+  badgeColor: '#fbbf24',
+  from: '<strong>Cumplo Inversionistas</strong> &lt;hola@cumplo.com&gt;',
+  subject: 'Inversión directa en Cumplo: tú eliges, tú controlas',
+  segs: ['perfil_sofisticado', 'lead_ads_directa'],
+  body: `
+    <div class="seg-chip">📌 Objetivo: Historia/Perfil — Mostrar inversión directa. CTA suave.</div>
+    <div class="email-txt">
+      <p>Hola Alejandro,</p>
+      <p>Para alguien que prefiere <span class="hi">elegir activamente en qué empresas invertir</span>, la Inversión Directa en Cumplo puede ser exactamente lo que estás buscando.</p>
+      <h3>¿Cómo funciona la Inversión Directa?</h3>
+      <p>Las empresas que necesitan capital publican sus solicitudes en la plataforma. Tú revisas el perfil de cada una —actividad, historial, monto, plazo— y decides cuánto destinar a cada una.</p>
+      <h3>Los números</h3>
+      <ul>
+        <li><strong>Tasas anuales:</strong> entre <span class="hi">12,5% y 21%</span> según operación</li>
+        <li><strong>Plazos:</strong> desde 15 hasta 186 días</li>
+        <li><strong>Tipos:</strong> anticipos de factura, capital de trabajo</li>
+        <li><strong>Riesgo:</strong> mayor que los Tokens, pero con mayor control y potencial</li>
+      </ul>
+      <h3>Transparencia ante todo</h3>
+      <p>Cumplo reconoce que toda inversión directa conlleva riesgo, incluida la posibilidad de pérdida parcial o total del capital. Por eso recomendamos diversificar entre varias empresas y comenzar con montos que te permitan aprender el proceso.</p>
+      <p>Default histórico de la plataforma: <span class="hi">0,45%</span> — uno de los más bajos de la industria fintech LATAM.</p>
+      <div class="cta-blk">Ver oportunidades activas →</div>
+      <span class="sec-lnk">Primero quiero registrarme gratis</span>
+      <hr>
+      <p class="foot">Cumplo · invierte.cumplo.com · Puedes darte de baja en cualquier momento.</p>
+    </div>
+  `
+},
+d5: {
+  badge: 'Día 5 — Email de Objeción + Venta',
+  badgeColor: '#FF6A00',
+  from: '<strong>Cumplo Inversionistas</strong> &lt;hola@cumplo.com&gt;',
+  subject: '+7.200 pymes. USD 3.300M. ¿Y tu dinero aún en el banco?',
+  segs: ['Todos los leads · no registrados', 'Flujo de conversión final'],
+  body: `
+    <div class="seg-chip">📌 Objetivo: Objeción + Venta — Prueba social. CTA principal único y claro.</div>
+    <div class="email-txt">
+      <p>Hola Alejandro,</p>
+      <p>Llevamos años siendo la plataforma de financiamiento colaborativo más grande de América Latina. Estos son los números que definen lo que hacemos:</p>
+      <ul>
+        <li><span class="hi">USD 3.300 millones</span> financiados</li>
+        <li><span class="hi">+7.200</span> empresas apoyadas</li>
+        <li><span class="hi">+200.000</span> operaciones completadas</li>
+        <li><span class="hi">0,45%</span> de tasa de default histórica</li>
+      </ul>
+      <p>Cada vez que alguien invierte en Cumplo, hay una pyme real que puede pagar sueldos, comprar insumos o ejecutar un proyecto. <strong>Y tú puedes ser parte de eso desde $100.000 pesos.</strong></p>
+      <h3>Sabemos lo que frena a las personas</h3>
+      <p>"¿Y si pierdo mi dinero?" — nuestro default histórico es del <span class="hi">0,45%</span>. Diversificamos entre decenas de empresas. El riesgo está controlado.</p>
+      <p>"¿Es seguro registrarme?" — el registro es completamente gratuito y sin compromisos. Puedes explorar sin invertir un solo peso hasta que te sientas listo/a.</p>
+      <p>"¿En qué se diferencia del banco?" — las tasas. Un depósito a plazo típico rinde entre 0,5% y 3% anual. Nuestros Tokens acumulan más del 7% y la inversión directa puede superar el 21%.</p>
+      <div class="cta-blk">Registrarme gratis ahora →</div>
+      <span class="sec-lnk">Explorar oportunidades sin registrarme</span>
+      <p>Si tienes alguna pregunta, responde este correo o escríbenos directamente por WhatsApp. Estamos aquí.</p>
+      <hr>
+      <p class="foot">El equipo de Cumplo Inversionistas · invierte.cumplo.com<br><small>Puedes darte de baja en cualquier momento. Este correo se envió porque mostraste interés en invertir con Cumplo.</small></p>
+    </div>
+  `
+}
+};
+
+/* ═══════════════════════════════════════
+   CHAT STATE MACHINE
+═══════════════════════════════════════ */
+const STATES = {
+  init: {
+    bot: ['👋 Hola <strong>Alejandro</strong>, bienvenido/a a <strong>Cumplo</strong>. Somos la plataforma líder de financiamiento colaborativo en LATAM.', '¿Te cuento cómo puedes hacer crecer tu dinero con nosotros?'],
+    opts: [
+      {t:'✅ Sí, cuéntame', u:'Sí, cuéntame', n:'seg', pts:5},
+      {t:'🤔 Tengo una duda primero', u:'Tengo una duda primero', n:'doubt', pts:5}
+    ]
+  },
+  doubt: {
+    bot: ['Por supuesto 🙂 ¿Sobre qué te surge la duda?'],
+    opts: [
+      {t:'❓ ¿Qué es exactamente Cumplo?', u:'¿Qué es Cumplo?', n:'explain', pts:10},
+      {t:'🔒 ¿Es seguro registrarme?', u:'¿Es seguro registrarme?', n:'safe', pts:10},
+      {t:'⚠️ ¿Puedo perder mi dinero?', u:'¿Puedo perder mi dinero?', n:'risk', pts:10}
+    ]
+  },
+  explain: {
+    bot: ['Cumplo conecta personas que quieren invertir con empresas reales que necesitan capital para crecer.','Los números: <strong>+USD 3.300M</strong> financiados · <strong>+7.200 pymes</strong> · default histórico <strong>0,45%</strong>. Somos Empresa B. 🌱','¿Te cuento las opciones disponibles para inversionistas?'],
+    opts: [{t:'✅ Sí, cuéntame las opciones', u:'Cuéntame las opciones', n:'seg', pts:5}]
+  },
+  safe: {
+    bot: ['¡Completamente seguro! 🔒','Tu registro es gratuito y sin compromisos. Solo necesitas RUT y correo. Puedes explorar todas las oportunidades sin invertir nada hasta que estés listo/a.'],
+    opts: [{t:'✅ Entendido, ¿cuáles son las opciones?', u:'Entendido, quiero ver las opciones', n:'seg', pts:5}]
+  },
+  risk: {
+    bot: ['Toda inversión tiene riesgo, y en Cumplo lo decimos con claridad. 👐','Por eso recomendamos comenzar con los <strong>Tokens</strong>, que diversifican automáticamente entre muchas empresas. Nuestro default histórico es del <strong>0,45%</strong>.','Puedes revisar los Términos y Condiciones cuando quieras.'],
+    opts: [{t:'✅ Gracias por la claridad, sigo explorando', u:'Gracias, quiero seguir', n:'seg', pts:10}]
+  },
+  seg: {
+    bot: ['¿Cuál de estas opciones describe mejor lo que buscas?'],
+    opts: [
+      {t:'💎 Token — simple, diversificado, liquidez programada', u:'Quiero algo simple y diversificado', n:'token', pts:15, tag:'perfil_conservador'},
+      {t:'🏭 Directa — yo elijo en qué empresas invertir', u:'Prefiero elegir mis inversiones', n:'directa', pts:15, tag:'perfil_sofisticado'},
+      {t:'🔍 Exploración — aún no tengo claro qué busco', u:'No tengo claro aún', n:'explore', pts:10, tag:'en_exploracion'}
+    ]
+  },
+  token: {
+    bot: ['¡Excelente perfil! 🎯 Para ti tenemos dos opciones:','<strong>Index Token:</strong> 7,38% acumulado (abr.24–feb.26) · Liquidez diaria desde día 30 · Desde ~$100.000','<strong>Puma Token:</strong> 8,41% acumulado · Liquidez trimestral · Mayor rendimiento a largo plazo','🏷️ Tag asignado en HubSpot: <span style="color:#FF6A00;font-weight:700">perfil_conservador</span>'],
+    opts: [
+      {t:'🚀 Registrarme gratis y empezar', u:'Quiero registrarme gratis', n:'cta', pts:25, tag:'lead_calificado'},
+      {t:'🔍 Explorar las oportunidades primero', u:'Prefiero explorar primero', n:'explore_cta', pts:10}
+    ]
+  },
+  directa: {
+    bot: ['👍 Perfil avanzado. Con Inversión Directa en Cumplo:','• Eliges en qué empresas invertir · Tasas: <strong>12,5% – 21% anual</strong>','• Plazos: 15 a 186 días · Anticipos factura + Capital de trabajo','⚠️ Requiere mayor tolerancia al riesgo, pero mayor control y retorno potencial.','🏷️ Tag: <span style="color:#FF6A00;font-weight:700">perfil_sofisticado</span>'],
+    opts: [
+      {t:'👁️ Ver oportunidades activas ahora', u:'Quiero ver las oportunidades', n:'cta', pts:25, tag:'lead_calificado'},
+      {t:'🚀 Registrarme primero', u:'Me registro primero', n:'cta', pts:25, tag:'lead_calificado'}
+    ]
+  },
+  explore: {
+    bot: ['Sin problema 🙂 Cumplo conecta <strong>inversionistas</strong> con <strong>empresas reales</strong> que necesitan capital.','Tienes dos caminos: <strong>Tokens</strong> (diversificado, simple) o <strong>Inversión Directa</strong> (tú eliges empresa). ¿Cuál te llama más?'],
+    opts: [
+      {t:'💎 Los Tokens suenan bien', u:'Los Tokens me interesan', n:'token', pts:10, tag:'en_exploracion'},
+      {t:'🏭 Prefiero elegir yo mis inversiones', u:'Prefiero la inversión directa', n:'directa', pts:10, tag:'en_exploracion'}
+    ]
+  },
+  cta: {
+    bot: ['¡Perfecto! 🎉 Estás a un paso de hacer trabajar tu dinero.','Tu registro es <strong>completamente gratuito</strong> y sin compromisos. Solo tarda 2 minutos.','🏷️ Tag: <span style="color:#FF6A00;font-weight:700">lead_calificado</span> — HubSpot activa el seguimiento personalizado.'],
+    opts: [], cta: true
+  },
+  explore_cta: {
+    bot: ['¡Claro! 👐 Puedes ver las oportunidades disponibles sin registrarte.','¿Quieres que te avisemos cuando haya nuevas oportunidades que coincidan con tu perfil?'],
+    opts: [{t:'✅ Sí, avísame por email', u:'Sí, avísame', n:'cta', pts:10}]
+  }
+};
+
+let chatScore = 0;
+let chatInited = false;
+
+function initChat() {
+  if (chatInited) return;
+  chatInited = true;
+  chatScore = 0;
+  renderState('init');
+  setTimeout(() => {
+    const inp = document.getElementById('chat-text-inp');
+    if (inp && !inp._hasKbListener) {
+      inp._hasKbListener = true;
+      inp.addEventListener('keydown', e => { if (e.key === 'Enter') handleChatText(); });
+    }
+  }, 200);
+}
+
+function renderState(key) {
+  const state = STATES[key];
+  if (!state) return;
+  const msgs = document.getElementById('chat-msgs');
+  const opts = document.getElementById('chat-opts');
+  const ctaArea = document.getElementById('chat-cta-area');
+  if (!msgs || !opts) return;
+  opts.innerHTML = '';
+  if (ctaArea) ctaArea.innerHTML = '';
+
+  state.bot.forEach((txt, i) => {
+    setTimeout(() => {
+      const d = document.createElement('div');
+      d.className = 'msg bot';
+      d.innerHTML = txt;
+      msgs.appendChild(d);
+      msgs.scrollTop = msgs.scrollHeight;
+    }, i * 350);
+  });
+
+  const delay = state.bot.length * 350 + 200;
+  setTimeout(() => {
+    if (state.cta && ctaArea) {
+      ctaArea.innerHTML = '<button class="chat-cta">Registrarme gratis en Cumplo →</button>';
+    } else {
+      state.opts.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'chat-opt';
+        btn.textContent = opt.t;
+        btn.onclick = () => handleOpt(opt);
+        opts.appendChild(btn);
+      });
+    }
+  }, delay);
+}
+
+function handleOpt(opt) {
+  const msgs = document.getElementById('chat-msgs');
+  const opts = document.getElementById('chat-opts');
+  if (!msgs || !opts) return;
+  opts.innerHTML = '';
+
+  const u = document.createElement('div');
+  u.className = 'msg user';
+  u.textContent = opt.u;
+  msgs.appendChild(u);
+  msgs.scrollTop = msgs.scrollHeight;
+
+  if (opt.pts) {
+    chatScore += opt.pts;
+    const sc = document.getElementById('live-score');
+    if (sc) sc.textContent = chatScore + ' pts';
+  }
+
+  setTimeout(() => renderState(opt.n), 300);
+}
+
+/* ═══════════════════════════════════════
+   PANEL FUNCTIONS
+═══════════════════════════════════════ */
+function openPanel(key) {
+  const p = PANELS[key];
+  if (!p) return;
+  document.getElementById('ptitle').textContent = p.title;
+  document.getElementById('psub').textContent = p.sub;
+  document.getElementById('pbar').style.background = p.color;
+  document.getElementById('pbody').innerHTML = p.html;
+  document.getElementById('panel').classList.add('open');
+
+  if (key === 'manychat') {
+    chatInited = false;
+    setTimeout(initChat, 100);
+  }
+}
+
+function closePanel() {
+  document.getElementById('panel').classList.remove('open');
+}
+
+function simulateSubmit() {
+  const btn = document.querySelector('.lf-btn');
+  if (!btn) return;
+  btn.textContent = '✓ Datos guardados en HubSpot';
+  btn.style.background = '#16a34a';
+  setTimeout(() => openPanel('hubspot'), 700);
+}
+
+/* ═══════════════════════════════════════
+   MODAL FUNCTIONS
+═══════════════════════════════════════ */
+function openModal(key) {
+  const e = EMAILS[key];
+  if (!e) return;
+  document.getElementById('m-badge').textContent = e.badge;
+  document.getElementById('m-badge').style.color = e.badgeColor;
+  document.getElementById('m-from').innerHTML = 'De: ' + e.from;
+  document.getElementById('m-subj').textContent = e.subject;
+  const segsEl = document.getElementById('m-segs');
+  segsEl.innerHTML = '<span>Segmento:</span>';
+  e.segs.forEach(s => {
+    const sp = document.createElement('span');
+    sp.className = 'tag';
+    sp.textContent = s;
+    segsEl.appendChild(sp);
+  });
+  document.getElementById('m-body').innerHTML = e.body;
+  document.getElementById('modal-ov').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal-ov').classList.remove('open');
+}
+
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modal-ov')) closeModal();
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closePanel(); closeKpiModal(); } });
+
+/* ═══════════════════════════════════════
+   KPI DATA
+═══════════════════════════════════════ */
+const KPI_DATA = {
+
+ctr: {
+  acronym: 'KPI — CTR (Click-Through Rate)',
+  title: 'CTR — Tasa de Clics sobre Impresiones',
+  star: false,
+  level: 'Captación',
+  levelColor: 'rgba(99,102,241,.12)',
+  levelText: '#818cf8',
+  fullTitle: 'Click-Through Rate del Anuncio Meta',
+  desc: 'Mide qué porcentaje de las personas que vieron el anuncio decidieron hacer clic en él. Es la primera señal de que el mensaje y el segmento están bien alineados. Un CTR alto indica que el gancho creativo (headline, imagen, copy) resuena con la audiencia objetivo.',
+  formula: 'CTR = (Clics en el anuncio ÷ Impresiones totales) × 100',
+  meta: '📌 Referencia industria fintech: 1,5%–3,5% en Meta Ads. Bajo 1% → revisar copy o segmentación. Sobre 4% → escalar presupuesto.',
+  why: 'En Cumplo el CTR es el primer filtro de calidad del funnel. Un anuncio con bajo CTR no solo desperdicia presupuesto: trae leads poco calificados que generarán mayor abandono en pasos posteriores. Optimizar CTR reduce el CPL (costo por lead) de todo el funnel.',
+  nodes: [
+    { color: '#818cf8', name: 'Anuncio META — lead_ads_token', stage: 'WF1 · Punto de entrada' },
+    { color: '#FF6A00', name: 'Anuncio META — lead_ads_directa', stage: 'WF1 · Punto de entrada' }
+  ],
+  impact: 'Si el CTR baja: A/B testear headline y creative. Si el CTR sube pero el CR de landing cae: el anuncio promete algo que la landing no cumple (desalineación de mensaje).'
+},
+
+abandono: {
+  acronym: 'KPI — Bounce Rate / Form Abandonment Rate',
+  title: 'Tasa de Abandono en Landing Page',
+  star: false,
+  level: 'Fricción',
+  levelColor: 'rgba(251,191,36,.1)',
+  levelText: '#fbbf24',
+  fullTitle: 'Form Abandonment Rate — Abandono antes de enviar el formulario',
+  desc: 'Mide el porcentaje de visitantes que llegan a la landing page pero se van sin completar el formulario. Detecta fricción específica en el diseño de la página, en los campos solicitados, o en la desalineación entre el mensaje del anuncio y lo que el usuario encuentra al llegar.',
+  formula: 'Abandono = (Visitantes que NO envían el form ÷ Total visitantes) × 100',
+  meta: '📌 Meta interna fase piloto: Tasa de conversión de landing >20% (abandono <80%). Landing fintech promedio: 15%–25% de conversión.',
+  why: 'La landing es el cuello de botella más crítico del WF1. Un buen CTR en el anuncio no sirve si la mayoría abandona la página. Cada punto de mejora en conversión de landing multiplica el resultado de toda la campaña sin aumentar el presupuesto de medios.',
+  nodes: [
+    { color: '#4ade80', name: 'Landing Page — invierte.cumplo.com', stage: 'WF1 · Captura del lead' }
+  ],
+  impact: 'Abandono alto: revisar si el headline coincide con el anuncio, si el formulario tiene demasiados campos, o si falta trust social above the fold. Reducir 1 campo obligatorio puede subir la conversión hasta un 10–15%.'
+},
+
+avance: {
+  acronym: 'KPI — Flow Completion Rate / Funnel Progression Rate',
+  title: 'Tasa de Avance Completo en el Flujo',
+  star: true,
+  level: 'Activación',
+  levelColor: 'rgba(255,106,0,.12)',
+  levelText: '#FF6A00',
+  fullTitle: 'Flow Completion Rate — % de leads que completan el flujo conversacional',
+  desc: 'Mide qué porcentaje de los leads que inician el bot de ManyChat llegan hasta el CTA final (registro o exploración). Se calcula en cada etapa del flujo para identificar exactamente en qué paso se produce el mayor abandono. Es el KPI central de la eficiencia del WF2.',
+  formula: 'FCR = (Leads que llegan al CTA final ÷ Leads que inician el bot) × 100',
+  meta: '📌 Meta interna fase piloto: >50%. Cada paso del bot debe retener al menos el 70% de los que llegaron al paso anterior.',
+  why: 'Este KPI es el termómetro de salud del flujo conversacional completo. Si el 70% abandona en el paso 2 (segmentación), el problema es el mensaje de bienvenida. Si abandona en el paso 4, el producto no está bien explicado. Sin esta métrica, no es posible saber dónde optimizar.',
+  nodes: [
+    { color: '#8b5cf6', name: 'ManyChat Bot — 7 pasos', stage: 'WF2 · Calificación' },
+    { color: '#22d3ee', name: 'Bifurcación por perfil', stage: 'WF2 · Segmentación' },
+    { color: '#fbbf24', name: 'Módulo de Objeciones', stage: 'WF2 · Activación' },
+    { color: '#4ade80', name: 'CTA Final', stage: 'WF2 · Conversión' }
+  ],
+  impact: 'Si el FCR es bajo: mapear step-by-step dónde cae el usuario con Analytics de ManyChat. El nodo con mayor tasa de abandono es la primera prioridad de optimización del flujo.'
+},
+
+open_rate: {
+  acronym: 'KPI — Open Rate (OR)',
+  title: 'Open Rate — Tasa de Apertura de Email',
+  star: false,
+  level: 'Email',
+  levelColor: 'rgba(167,139,250,.12)',
+  levelText: '#a78bfa',
+  fullTitle: 'Email Open Rate — Porcentaje de correos abiertos sobre los enviados',
+  desc: 'Mide qué proporción de los destinatarios abre el email. Depende principalmente de la línea de asunto, el nombre del remitente y el momento de envío. Es la primera barrera de efectividad de la secuencia de nutrición: si el email no se abre, el contenido no importa.',
+  formula: 'Open Rate = (Emails abiertos ÷ Emails entregados) × 100',
+  meta: '📌 Meta interna fase piloto: >30%. Promedio industria fintech: 22–28%. Bajo 15% → revisar asunto y segmentación.',
+  why: 'En la secuencia D0/D2/D5 de Cumplo, la apertura del D0 (bienvenida) es crítica porque sienta la expectativa del lead sobre los siguientes correos. Si D0 no se abre, la probabilidad de que abra D2 o D5 cae drásticamente. HubSpot activa el flujo de reactivación cuando detecta 0 aperturas al día 3.',
+  nodes: [
+    { color: '#a78bfa', name: 'Email D0 — Bienvenida y contexto', stage: 'WF1 · Nutrición · Día 0' },
+    { color: '#4ade80', name: 'Email D2 — Producto por perfil', stage: 'WF1 · Nutrición · Día 2' },
+    { color: '#FF6A00', name: 'Email D5 — Prueba social + CTA', stage: 'WF1 · Nutrición · Día 5' }
+  ],
+  impact: 'Open Rate bajo: A/B testear líneas de asunto (curiosidad vs. beneficio directo). Revisar horario de envío. HubSpot permite reenviar con asunto alternativo a los que no abrieron.'
+},
+
+email_ctr: {
+  acronym: 'KPI — CTOR (Click-to-Open Rate)',
+  title: 'CTOR — Tasa de Clic sobre Apertura en Email',
+  star: false,
+  level: 'Email',
+  levelColor: 'rgba(167,139,250,.12)',
+  levelText: '#a78bfa',
+  fullTitle: 'Click-to-Open Rate — Clics en el CTA del email vs. aperturas totales',
+  desc: 'Mide qué porcentaje de las personas que abrieron el email hicieron clic en el CTA. A diferencia del CTR estándar (sobre enviados), el CTOR aisla la efectividad del contenido: si el email se abrió pero no generó clic, el problema es el cuerpo del mensaje, no el asunto.',
+  formula: 'CTOR = (Clics únicos en CTA ÷ Aperturas únicas) × 100',
+  meta: '📌 Meta interna: >15%. Un CTOR del 20%+ en emails de nutrición fintech es excelente. Si Open Rate es bueno pero CTOR es bajo, el contenido no está convenciendo.',
+  why: 'En los emails D2 de Cumplo (producto por perfil), el CTOR indica si la segmentación funcionó: un lead conservador que recibe el email de Tokens debería tener mayor CTOR que si recibiera el email de Inversión Directa. Permite validar la lógica de bifurcación de HubSpot.',
+  nodes: [
+    { color: '#4ade80', name: 'Email D2 — Variante Token (perfil_conservador)', stage: 'WF1 · Nutrición · Día 2' },
+    { color: '#fbbf24', name: 'Email D2 — Variante Directa (perfil_sofisticado)', stage: 'WF1 · Nutrición · Día 2' },
+    { color: '#FF6A00', name: 'Email D5 — CTA Final (todos no registrados)', stage: 'WF1 · Nutrición · Día 5' }
+  ],
+  impact: 'CTOR bajo: revisar si el CTA es claro y único (skill: un solo CTA por email). Verificar que el contenido del email coincide con el perfil del segmento. Simplificar el camino visual hacia el botón.'
+},
+
+unsubscribe: {
+  acronym: 'KPI — Unsubscribe Rate',
+  title: 'Unsubscribe Rate — Tasa de Bajas de Lista',
+  star: false,
+  level: 'Fricción',
+  levelColor: 'rgba(251,191,36,.1)',
+  levelText: '#fbbf24',
+  fullTitle: 'Unsubscribe Rate — Porcentaje de bajas por email enviado',
+  desc: 'Mide cuántos destinatarios se dan de baja de la lista en cada envío. Es un KPI de alerta temprana: una tasa alta indica que el contenido no es relevante para el segmento, la frecuencia es excesiva, o el lead llegó al funnel con expectativas distintas a las del contenido enviado.',
+  formula: 'Unsubscribe Rate = (Bajas ÷ Emails entregados) × 100',
+  meta: '📌 Alerta si supera 1,5% por envío. Promedio saludable: <0,5%. HubSpot notifica automáticamente si se supera el umbral.',
+  why: 'Una baja no solo pierde un lead: daña la reputación del dominio de envío (deliverability). Si muchos leads se dan de baja, los próximos correos de Cumplo podrían caer en spam para todos. En fintech, donde la confianza es el activo principal, proteger la lista de emails es crítico.',
+  nodes: [
+    { color: '#a78bfa', name: 'Secuencia Email Nurture — D0/D2/D5', stage: 'WF1 · Nutrición completa' },
+    { color: '#FF6A00', name: 'HubSpot CRM — Flujo de reactivación', stage: 'WF1 · Re-engagement' }
+  ],
+  impact: 'Tasa alta: espaciar más los envíos, revisar si el perfil del lead coincide con el contenido. Considerar doble opt-in para mejorar calidad de lista desde la captura.'
+},
+
+wa_start: {
+  acronym: 'KPI — WA Initiation Rate',
+  title: 'WA Initiation Rate — Inicio de Conversación WhatsApp',
+  star: false,
+  level: 'Captación',
+  levelColor: 'rgba(34,211,238,.1)',
+  levelText: '#22d3ee',
+  fullTitle: 'WhatsApp Initiation Rate — % de leads que inician conversación en WA',
+  desc: 'Mide qué porcentaje de los leads que llegan a la Landing de Gracias hacen clic en el botón de WhatsApp e inician la conversación con el bot. Es el puente entre el WF1 (formulario) y el WF2 (conversacional). Una tasa baja indica fricción en la Thank You page o falta de incentivo para continuar.',
+  formula: 'WA Init Rate = (Leads que envían 1er mensaje WA ÷ Leads que llegan a Thank You page) × 100',
+  meta: '📌 No hay meta estándar definida en el informe. Referencia interna sugerida: >40%. Si es bajo, el CTA de la Thank You page necesita más incentivo explícito.',
+  why: 'El WF2 solo existe si este KPI funciona. Sin leads iniciando la conversación de WhatsApp, no hay segmentación por chatbot, no hay tags de perfil en HubSpot y la personalización de emails se hace con información incompleta. Es la bisagra entre ambos workflows.',
+  nodes: [
+    { color: '#22d3ee', name: 'Landing de Gracias — CTA WhatsApp', stage: 'WF2 · Punto de entrada' },
+    { color: '#8b5cf6', name: 'ManyChat Bot — Mensaje inicial', stage: 'WF2 · Inicio del flujo' }
+  ],
+  impact: 'Tasa baja: reforzar el CTA de la Thank You page con beneficio explícito ("Resuelve tus dudas ahora en 2 minutos"). Considerar añadir urgencia o exclusividad al mensaje de invitación.'
+},
+
+seg_response: {
+  acronym: 'KPI — Segmentation Response Rate',
+  title: 'Segmentation Response Rate — Respuesta a Pregunta de Segmentación',
+  star: false,
+  level: 'Activación',
+  levelColor: 'rgba(139,92,246,.12)',
+  levelText: '#8b5cf6',
+  fullTitle: 'Segmentation Response Rate — % que responde la pregunta de perfil en el bot',
+  desc: 'Mide qué porcentaje de los usuarios que iniciaron la conversación responden la pregunta de segmentación (Token / Directa / Exploración). Es el indicador de compromiso real con el flujo: pasar del saludo a declarar una intención de perfil requiere un nivel de interés genuino.',
+  formula: 'SRR = (Leads que responden pregunta de perfil ÷ Leads que inician la conversación) × 100',
+  meta: '📌 Meta referencial: >70%. Bajo 50% indica que el hook inicial del bot no genera suficiente confianza o interés para continuar.',
+  why: 'La respuesta a la pregunta de segmentación es el momento donde el lead se convierte en un lead calificado. Sin esta respuesta, HubSpot no puede asignar los tags perfil_conservador, perfil_sofisticado o en_exploracion, lo que hace que todos los emails posteriores sean genéricos y menos efectivos.',
+  nodes: [
+    { color: '#8b5cf6', name: 'ManyChat Bot — Paso 2 y 3 (hook + segmentación)', stage: 'WF2 · Calificación' },
+    { color: '#FF6A00', name: 'HubSpot CRM — Asignación de tag de perfil', stage: 'WF1 · Segmentación' }
+  ],
+  impact: 'Tasa baja: revisar el mensaje de bienvenida del bot (hook). Simplificar las opciones de respuesta. El lenguaje debe ser simple y no financiero en las primeras interacciones.'
+},
+
+obj_resolution: {
+  acronym: 'KPI — Objection Resolution Rate',
+  title: 'Objection Resolution Rate — Tasa de Resolución de Objeciones',
+  star: false,
+  level: 'Activación',
+  levelColor: 'rgba(251,191,36,.1)',
+  levelText: '#fbbf24',
+  fullTitle: 'Objection Resolution Rate — % de leads que continúan el flujo tras activar el módulo de objeciones',
+  desc: 'Mide qué porcentaje de los usuarios que activaron el módulo de objeciones (enviando palabras clave como "riesgo", "seguro", "banco") continuaron el flujo después de recibir la respuesta del bot. Indica si las respuestas a objeciones están bien calibradas para este público.',
+  formula: 'ORR = (Leads que continúan el flujo post-objeción ÷ Leads que activaron el módulo) × 100',
+  meta: '📌 Meta referencial: >65%. Un lead que activa el módulo de objeciones y continúa tiene un lead score +10 pts adicionales en HubSpot.',
+  why: 'En productos financieros de alto involucramiento como Cumplo, la objeción no es una señal de rechazo: es una señal de interés real. Un lead que pregunta por el riesgo está considerando seriamente invertir. La calidad de la respuesta del bot en este momento puede ser la diferencia entre conversión y abandono.',
+  nodes: [
+    { color: '#fbbf24', name: 'Módulo de Objeciones — ManyChat', stage: 'WF2 · Activación por keyword' },
+    { color: '#8b5cf6', name: 'ManyChat Bot — Retoma flujo post-respuesta', stage: 'WF2 · Continuación' }
+  ],
+  impact: 'ORR bajo: revisar las respuestas del bot a cada objeción. Las respuestas deben ser empáticas, breves y con un dato concreto (ej: "0,45% de default histórico"). Evitar respuestas defensivas o demasiado técnicas.'
+},
+
+registro: {
+  acronym: 'KPI — CVR (Conversion Rate)',
+  title: 'CVR — Tasa de Conversión Lead → Registro',
+  star: true,
+  level: 'Conversión',
+  levelColor: 'rgba(74,222,128,.1)',
+  levelText: '#4ade80',
+  fullTitle: 'Conversion Rate — % de leads que completan el registro en la plataforma',
+  desc: 'Mide qué porcentaje de los leads captados en el funnel completan el registro como usuarios en la plataforma de Cumplo. Es el objetivo de conversión principal de toda la campaña y el KPI que justifica la inversión en medios pagados y automatización.',
+  formula: 'CVR = (Leads que completan registro ÷ Total leads captados) × 100',
+  meta: '📌 Meta interna fase piloto: >15%. Este es el umbral que determina si la campaña es rentable. Bajo 10% → revisar todo el funnel. Sobre 20% → escalar.',
+  why: 'El registro en Cumplo es la conversión macro del funnel: transforma un lead anónimo en un usuario identificado dentro del CRM con historial completo. A partir del registro, el equipo puede hacer seguimiento personalizado, mostrar oportunidades activas y acompañar la primera inversión.',
+  nodes: [
+    { color: '#4ade80', name: 'CTA Final — Registro gratuito', stage: 'WF2 · Conversión final' },
+    { color: '#FF6A00', name: 'HubSpot CRM — Tag: registrado', stage: 'WF1 · Cierre del funnel' },
+    { color: '#FF6A00', name: 'Tarjeta HubSpot — Perfil consolidado', stage: 'Post-funnel · CRM' }
+  ],
+  impact: 'CVR bajo: revisar si el CTA es suficientemente claro y sin fricción. Considerar eliminar pasos adicionales del registro. Asegurar que el flujo de WF2 llegue al CTA con el lead correctamente calificado y confiado.'
+},
+
+primera_inversion: {
+  acronym: 'KPI — FTI Rate (First-Time Investment Rate) ⭐ KPI ESTRELLA',
+  title: 'FTI Rate — Primera Inversión Efectiva',
+  star: true,
+  level: '⭐ Negocio',
+  levelColor: 'rgba(234,179,8,.15)',
+  levelText: '#eab308',
+  fullTitle: 'First-Time Investment Rate — % de usuarios registrados que realizan su primera inversión',
+  desc: 'Mide qué porcentaje de los usuarios registrados realizan al menos una inversión real en la plataforma. Es el KPI de mayor valor estratégico de todo el funnel: es el único indicador que demuestra que la estrategia de inbound conversacional generó valor de negocio real, no solo contactos.',
+  formula: 'FTI Rate = (Usuarios que realizan ≥1 inversión ÷ Total usuarios registrados) × 100',
+  meta: '📌 KPI estrella del proyecto. No tiene meta referencial fija porque depende del ciclo de decisión del inversionista, que puede ser de días a semanas. Su seguimiento es continuo post-registro.',
+  why: 'En el informe se define explícitamente como "el indicador de mayor valor estratégico" y "el más cercano al objetivo real de negocio". Todos los demás KPIs del funnel son métricas de proceso; este es la métrica de resultado. Sin conversión a inversión, el funnel convierte leads pero no genera ingresos para Cumplo ni retorno para el inversionista.',
+  nodes: [
+    { color: '#4ade80', name: 'CTA Final — "Ver oportunidades activas"', stage: 'WF2 · Exploración de inversión' },
+    { color: '#FF6A00', name: 'HubSpot CRM — Tag: inversor_activo', stage: 'Post-funnel · Negocio' },
+    { color: '#FF6A00', name: 'Tarjeta HubSpot — ¿Realizó inversión?', stage: 'Post-funnel · Seguimiento' }
+  ],
+  impact: 'FTI Rate bajo: activar seguimiento humano desde HubSpot para leads registrados con score alto. Enviar email adicional mostrando oportunidades activas y rentabilidades reales. El onboarding post-registro es la siguiente etapa del journey que este funnel no cubre pero debe contemplarse.'
+}
+
+};
+
+/* ═══════════════════════════════════════
+   KPI MODAL FUNCTIONS
+═══════════════════════════════════════ */
+function openKpiModal(key) {
+  const d = KPI_DATA[key];
+  if (!d) return;
+
+  document.getElementById('km-acronym').textContent = d.acronym;
+  document.getElementById('km-title').textContent = d.title;
+  document.getElementById('km-full-title').textContent = d.fullTitle;
+  document.getElementById('km-desc').textContent = d.desc;
+  document.getElementById('km-formula').textContent = d.formula;
+  document.getElementById('km-meta').textContent = d.meta;
+  document.getElementById('km-why').textContent = d.why;
+  document.getElementById('km-impact').textContent = d.impact;
+
+  const starBadge = document.getElementById('km-star-badge');
+  starBadge.style.display = d.star ? 'inline-block' : 'none';
+
+  const lvl = document.getElementById('km-level-badge');
+  lvl.textContent = d.level;
+  lvl.style.background = d.levelColor;
+  lvl.style.color = d.levelText;
+  lvl.style.border = '1px solid ' + d.levelText.replace(')', ',.3)').replace('rgb', 'rgba');
+
+  const nodesEl = document.getElementById('km-nodes');
+  nodesEl.innerHTML = '';
+  d.nodes.forEach(n => {
+    const card = document.createElement('div');
+    card.className = 'km-node-card';
+    card.innerHTML = `<div class="km-ndot" style="background:${n.color}"></div><div><div class="km-nname">${n.name}</div><div class="km-nstage">${n.stage}</div></div>`;
+    nodesEl.appendChild(card);
+  });
+
+  if (d.star) {
+    document.querySelector('.kpi-modal-box').style.borderColor = 'rgba(234,179,8,.4)';
+  } else {
+    document.querySelector('.kpi-modal-box').style.borderColor = 'rgba(255,255,255,.1)';
+  }
+
+  document.getElementById('kpi-modal-ov').classList.add('open');
+}
+
+function closeKpiModal() {
+  document.getElementById('kpi-modal-ov').classList.remove('open');
+}
+
+function closeKpiModalOutside(e) {
+  if (e.target === document.getElementById('kpi-modal-ov')) closeKpiModal();
+}
+
+/* ═══════════════════════════════════════
+   CHAT TEXT INPUT + KEYWORD DETECTION
+═══════════════════════════════════════ */
+function handleChatText() {
+  const inp = document.getElementById('chat-text-inp');
+  if (!inp) return;
+  const raw = inp.value.trim();
+  if (!raw) return;
+  const text = raw.toLowerCase();
+  inp.value = '';
+
+  const msgs = document.getElementById('chat-msgs');
+  if (!msgs) return;
+  const u = document.createElement('div');
+  u.className = 'msg user';
+  u.textContent = raw;
+  msgs.appendChild(u);
+  msgs.scrollTop = msgs.scrollHeight;
+
+  // Keyword routing
+  if (/(riesgo|perder|mora|quiebra|default|pierd|perd)/.test(text)) {
+    chatScore += 10; updateChatScore();
+    _botReply(['Toda inversión tiene riesgo, y en Cumplo lo decimos con claridad. 👐 Por eso recomendamos comenzar con los <strong>Tokens</strong>, que diversifican automáticamente. Default histórico: <strong>0,45%</strong>. Puedes revisar los T&C cuando quieras.']);
+  } else if (/(seguro|datos|privaci|registr|seguridad)/.test(text)) {
+    chatScore += 10; updateChatScore();
+    _botReply(['¡Completamente seguro! 🔒 Tu registro es gratuito y sin compromisos. Solo RUT y correo. Puedes explorar todas las oportunidades sin invertir nada hasta que estés listo/a.']);
+  } else if (/(banco|afp|diferenci|compar|deposit|plaz)/.test(text)) {
+    chatScore += 10; updateChatScore();
+    _botReply(['A diferencia del banco, en Cumplo <strong>tú ves en tiempo real</strong> cómo rinde tu dinero. Nuestros Tokens superan el 7% acumulado, vs. un DAP típico de 0,5%–3% anual. Sin burocracia.']);
+  } else if (/(mínimo|minimo|cuánto|cuanto|poco|capital|plata)/.test(text)) {
+    chatScore += 10; updateChatScore();
+    _botReply(['Puedes empezar con poco más de <strong>$100.000 pesos</strong> chilenos a través de nuestros Tokens. No necesitas grandes sumas para invertir de forma diversificada.']);
+  } else if (/(token|index|puma|conservador|simple|diversif|liquidez)/.test(text)) {
+    chatScore += 15; updateChatScore();
+    setTimeout(() => renderState('token'), 400);
+    return;
+  } else if (/(direct|empresa|elig|sofisticad|control|factura|capital de trabajo)/.test(text)) {
+    chatScore += 15; updateChatScore();
+    setTimeout(() => renderState('directa'), 400);
+    return;
+  } else if (/(explorar|explorac|no s[eé]|no tengo|aprender|conocer|qu[eé] es)/.test(text)) {
+    chatScore += 10; updateChatScore();
+    setTimeout(() => renderState('explore'), 400);
+    return;
+  } else if (/(registr|quiero|empezar|comenzar|inscrib|unirme)/.test(text)) {
+    chatScore += 25; updateChatScore();
+    setTimeout(() => renderState('cta'), 400);
+    return;
+  } else {
+    _botReply(['Entendido 😊 Puedo ayudarte con información sobre nuestros <strong>Tokens</strong> (simple, diversificado) o <strong>Inversión Directa</strong> (tú eliges empresa). ¿Qué te interesa?']);
+  }
+}
+
+function _botReply(messages) {
+  const msgs = document.getElementById('chat-msgs');
+  if (!msgs) return;
+  messages.forEach((txt, i) => {
+    setTimeout(() => {
+      const d = document.createElement('div');
+      d.className = 'msg bot';
+      d.innerHTML = txt;
+      msgs.appendChild(d);
+      msgs.scrollTop = msgs.scrollHeight;
+    }, i * 350 + 400);
+  });
+}
+
+function updateChatScore() {
+  const sc = document.getElementById('live-score');
+  if (sc) sc.textContent = chatScore + ' pts';
+}
+
+</script>
+</div><!-- /page2 -->
+</body>
+</html>
