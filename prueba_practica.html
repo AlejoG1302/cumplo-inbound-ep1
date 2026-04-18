@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prueba de Practica - Productos y Servicios</title>
+<style>
+  /* ===== RESET & BASE ===== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
+    background: #0a0a0a;
+    color: #e4e4e7;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ===== GRID PATTERN BACKGROUND ===== */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== COLORS ===== */
+  :root {
+    --orange: #FF6A00;
+    --indigo: #818cf8;
+    --cyan: #22d3ee;
+    --green: #4ade80;
+    --red: #f87171;
+    --surface: #141414;
+    --surface2: #1c1c1e;
+    --border: #2a2a2e;
+    --text: #e4e4e7;
+    --text-muted: #a1a1aa;
+  }
+
+  /* ===== STICKY HEADER ===== */
+  .sticky-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: transform 0.3s;
+  }
+  .sticky-header .logo {
+    font-weight: 700;
+    font-size: 1rem;
+    background: linear-gradient(135deg, var(--orange), var(--indigo));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .sticky-header nav { display: flex; gap: 8px; }
+  .sticky-header nav a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.8rem;
+    padding: 4px 10px;
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+  .sticky-header nav a:hover { color: var(--orange); background: rgba(255,106,0,0.1); }
+
+  /* ===== PROGRESS BAR ===== */
+  .progress-bar {
+    position: fixed;
+    top: 48px; left: 0; right: 0;
+    height: 3px;
+    z-index: 99;
+    background: var(--surface);
+  }
+  .progress-bar .fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--orange), var(--indigo));
+    transition: width 0.3s;
+  }
+
+  /* ===== SECTIONS ===== */
+  section { position: relative; z-index: 1; }
+
+  /* ===== COVER PAGE ===== */
+  .cover {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+  }
+  .cover .badge {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--orange);
+    color: var(--orange);
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 24px;
+    letter-spacing: 0.5px;
+  }
+  .cover h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #fff, var(--orange));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 16px;
+  }
+  .cover .subtitle {
+    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    color: var(--text-muted);
+    max-width: 600px;
+    margin-bottom: 48px;
+  }
+  .scroll-arrow {
+    width: 40px; height: 40px;
+    border: 2px solid var(--orange);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    animation: bounce 2s infinite;
+    cursor: pointer;
+    transition: background 0.2s;
+    text-decoration: none;
+    color: var(--orange);
+  }
+  .scroll-arrow:hover { background: rgba(255,106,0,0.15); }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(8px); }
+  }
+
+  /* ===== SECTION HEADERS ===== */
+  .section-header {
+    text-align: center;
+    padding: 80px 24px 40px;
+  }
+  .section-header .tag {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+  .section-header h2 {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    font-weight: 800;
+    color: #fff;
+  }
+  .section-header p {
+    color: var(--text-muted);
+    margin-top: 8px;
+    max-width: 500px;
+    margin-inline: auto;
+  }
+
+  /* ===== FLIP CARDS (PART 1) ===== */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px 60px;
+  }
+  .flip-card {
+    perspective: 800px;
+    min-height: 220px;
+    cursor: pointer;
+  }
+  .flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 220px;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+  }
+  .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+  .flip-card-front, .flip-card-back {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+  }
+  .flip-card-front {
+    background: var(--surface);
+    justify-content: center;
+  }
+  .flip-card-front:hover { border-color: var(--orange); }
+  .flip-card-front .card-num {
+    position: absolute;
+    top: 16px; right: 16px;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    background: var(--surface2);
+    padding: 2px 8px;
+    border-radius: 8px;
+  }
+  .flip-card-front .card-cat {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .flip-card-front h3 {
+    font-size: 1.05rem;
+    color: #fff;
+    font-weight: 700;
+  }
+  .flip-card-front .hint {
+    margin-top: 12px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+  .flip-card-back {
+    background: var(--surface2);
+    transform: rotateY(180deg);
+    overflow-y: auto;
+    border-color: var(--indigo);
+  }
+  .flip-card-back h4 {
+    font-size: 0.8rem;
+    color: var(--indigo);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .flip-card-back p, .flip-card-back li {
+    font-size: 0.88rem;
+    color: var(--text);
+    line-height: 1.55;
+  }
+  .flip-card-back ul { padding-left: 18px; }
+  .flip-card-back li { margin-bottom: 4px; }
+
+  /* ===== QUIZ (PART 2) ===== */
+  .quiz-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+  .quiz-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+    padding: 16px 20px;
+    background: var(--surface);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+  }
+  .quiz-score {
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+  .quiz-score span { color: var(--green); }
+  .timer-box {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+  }
+  .timer-box .time { font-weight: 700; font-variant-numeric: tabular-nums; color: var(--cyan); }
+  .timer-box.warning .time { color: var(--red); }
+  .timer-btn {
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--cyan);
+    background: transparent;
+    color: var(--cyan);
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  .timer-btn:hover { background: rgba(34,211,238,0.1); }
+  .timer-btn.active { background: var(--cyan); color: #000; }
+
+  .question-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 20px;
+    transition: border-color 0.3s;
+  }
+  .question-card.correct { border-color: var(--green); }
+  .question-card.incorrect { border-color: var(--red); }
+  .question-card .q-num {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--orange);
+    margin-bottom: 8px;
+  }
+  .question-card .q-text {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 20px;
+  }
+  .option-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    font-size: 0.92rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    line-height: 1.5;
+  }
+  .option-btn:hover:not(.selected):not(.disabled) {
+    border-color: var(--indigo);
+    background: rgba(129,140,248,0.08);
+  }
+  .option-btn.selected.right {
+    border-color: var(--green);
+    background: rgba(74,222,128,0.12);
+    color: var(--green);
+  }
+  .option-btn.selected.wrong {
+    border-color: var(--red);
+    background: rgba(248,113,113,0.12);
+    color: var(--red);
+  }
+  .option-btn.show-correct {
+    border-color: var(--green);
+    background: rgba(74,222,128,0.08);
+  }
+  .option-btn.disabled { cursor: default; opacity: 0.6; }
+  .option-btn .opt-letter {
+    display: inline-block;
+    width: 26px; height: 26px;
+    border-radius: 8px;
+    text-align: center;
+    line-height: 26px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-right: 12px;
+    background: rgba(255,255,255,0.05);
+    vertical-align: middle;
+  }
+
+  /* ===== DESARROLLO (PART 3) ===== */
+  .desarrollo-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 24px 100px;
+  }
+  .desarrollo-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .desarrollo-header {
+    padding: 24px 28px;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    transition: background 0.2s;
+  }
+  .desarrollo-header:hover { background: rgba(255,255,255,0.02); }
+  .desarrollo-header .d-num {
+    flex-shrink: 0;
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800;
+    font-size: 0.9rem;
+    color: #000;
+  }
+  .desarrollo-header .d-text {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    flex: 1;
+  }
+  .desarrollo-header .d-arrow {
+    flex-shrink: 0;
+    transition: transform 0.3s;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+  }
+  .desarrollo-card.open .d-arrow { transform: rotate(180deg); }
+  .desarrollo-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .desarrollo-card.open .desarrollo-body { max-height: 3000px; }
+  .desarrollo-content {
+    padding: 0 28px 28px;
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+  }
+  .desarrollo-content h4 {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+    margin-top: 20px;
+  }
+  .desarrollo-content h4:first-child { margin-top: 0; }
+  .desarrollo-content p, .desarrollo-content li {
+    font-size: 0.9rem;
+    color: var(--text);
+    line-height: 1.65;
+  }
+  .desarrollo-content ul { padding-left: 18px; margin-bottom: 8px; }
+  .desarrollo-content li { margin-bottom: 4px; }
+  .desarrollo-content .highlight {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+
+  /* ===== CONFETTI ===== */
+  .confetti-canvas {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 200;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 600px) {
+    .cards-grid { grid-template-columns: 1fr; }
+    .sticky-header nav { display: none; }
+    .quiz-controls { flex-direction: column; align-items: stretch; text-align: center; }
+    .flip-card { min-height: 200px; }
+    .flip-card-inner { min-height: 200px; }
+  }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-in {
+    animation: fadeInUp 0.5s ease-out both;
+  }
+
+  /* ===== SCROLLBAR ===== */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #0a0a0a; }
+  ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ===== STICKY HEADER ===== -->
+<header class="sticky-header">
+  <div class="logo">Productos y Servicios</div>
+  <nav>
+    <a href="#cover">Inicio</a>
+    <a href="#teoria">Teoria Flash</a>
+    <a href="#alternativas">Alternativas</a>
+    <a href="#desarrollo">Desarrollo</a>
+  </nav>
+</header>
+<div class="progress-bar"><div class="fill" id="progressFill"></div></div>
+
+<!-- ===== COVER PAGE ===== -->
+<section class="cover" id="cover">
+  <div class="badge">DuocUC 2026 &middot; Evaluacion 1</div>
+  <h1>Prueba de Practica</h1>
+  <h1 style="margin-top:-8px;">Productos y Servicios</h1>
+  <p class="subtitle">Caso ConfortStyle &middot; Customer Journey &middot; Design Thinking &middot; JTBD</p>
+  <a href="#teoria" class="scroll-arrow">&#9660;</a>
+</section>
+
+<!-- ===== PART 1: TEORIA FLASH ===== -->
+<section id="teoria">
+  <div class="section-header">
+    <div class="tag" style="background:rgba(255,106,0,0.15);color:var(--orange);">Parte 1</div>
+    <h2>Teoria Flash</h2>
+    <p>Haz clic en cada tarjeta para revelar la respuesta</p>
+  </div>
+  <div class="cards-grid" id="cardsGrid"></div>
+</section>
+
+<!-- ===== PART 2: ALTERNATIVAS ===== -->
+<section id="alternativas">
+  <div class="section-header">
+    <div class="tag" style="background:rgba(129,140,248,0.15);color:var(--indigo);">Parte 2</div>
+    <h2>Alternativas</h2>
+    <p>20 preguntas aleatorias del banco con feedback inmediato &middot; Reintenta cuantas veces quieras</p>
+  </div>
+  <div class="quiz-container">
+    <div class="quiz-controls">
+      <div class="quiz-score">Puntaje: <span id="scoreDisplay">0</span>/<span id="scoreTotal">20</span></div>
+      <div class="quiz-meta" id="quizMeta" style="font-size:12px;color:#888;margin-top:4px">Intento #<span id="attemptNum">1</span> &middot; 20 preguntas aleatorias de <span id="poolSize">0</span></div>
+      <div class="timer-box" id="timerBox">
+        <span>Tiempo:</span>
+        <span class="time" id="timerDisplay">15:00</span>
+        <button class="timer-btn" id="timerBtn" onclick="toggleTimer()">Iniciar</button>
+      </div>
+      <button class="timer-btn" id="resetBtn" onclick="resetQuiz()" style="background:rgba(255,106,0,0.15);color:var(--orange);border:1px solid rgba(255,106,0,0.3)">&#8635; Reiniciar</button>
+    </div>
+    <div id="quizContainer"></div>
+    <div id="quizFinished" style="display:none;text-align:center;padding:40px 20px;background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.15);border-radius:16px;margin-top:24px">
+      <div style="font-size:48px;margin-bottom:12px" id="finishEmoji">&#127881;</div>
+      <h3 id="finishTitle" style="font-size:22px;margin-bottom:8px">&iexcl;Terminaste!</h3>
+      <p id="finishScore" style="font-size:16px;color:#aaa;margin-bottom:20px">&mdash;</p>
+      <button onclick="resetQuiz()" class="timer-btn" style="background:var(--orange);color:#fff;padding:12px 28px;font-size:14px;font-weight:700;border:none;border-radius:10px;cursor:pointer">Reintentar con preguntas nuevas &#8635;</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PART 3: DESARROLLO ===== -->
+<section id="desarrollo">
+  <div class="section-header">
+    <div class="tag" style="background:rgba(34,211,238,0.15);color:var(--cyan);">Parte 3</div>
+    <h2>Desarrollo &mdash; Caso ConfortStyle</h2>
+    <p>Preguntas abiertas con respuesta modelo. Haz clic para expandir.</p>
+  </div>
+  <div class="desarrollo-container" id="desarrolloContainer"></div>
+</section>
+
+<!-- ===== CONFETTI CANVAS ===== -->
+<canvas class="confetti-canvas" id="confettiCanvas"></canvas>
+
+<script>
+// ========================================================
+// DATA: FLIP CARDS
+// ========================================================
+const flashCards = [
+  {
+    num: 1, cat: "Customer Journey Map", catColor: "#FF6A00",
+    q: "Que es un CJM?",
+    a: "Herramienta visual que mapea la experiencia completa del cliente con una marca, desde el primer contacto hasta la fidelizacion. Identifica touchpoints, emociones, pain points y momentos de la verdad."
+  },
+  {
+    num: 2, cat: "Customer Journey Map", catColor: "#FF6A00",
+    q: "Etapas del CJM (7 fases)",
+    a: "<ul><li><b>Reconocimiento (awareness):</b> cliente detecta necesidad</li><li><b>Consideracion:</b> investiga opciones</li><li><b>Decision:</b> elige producto/marca</li><li><b>Compra:</b> transaccion</li><li><b>Experiencia:</b> uso del producto</li><li><b>Fidelizacion:</b> recompra, lealtad</li><li><b>Promocion (advocacy):</b> recomienda a otros</li></ul>"
+  },
+  {
+    num: 3, cat: "Customer Journey Map", catColor: "#FF6A00",
+    q: "CJM As-Is vs To-Be",
+    a: "<b>As-Is:</b> mapea la experiencia ACTUAL con todos sus problemas.<br><b>To-Be:</b> diseña la experiencia IDEAL que queremos lograr.<br><br>La brecha entre ambos es la <b>oportunidad de innovacion</b>."
+  },
+  {
+    num: 4, cat: "Customer Journey Map", catColor: "#FF6A00",
+    q: "Componentes del CJM",
+    a: "Persona/arquetipo, etapas del journey, touchpoints (puntos de contacto), acciones del cliente, pensamientos y emociones, pain points y gains, momentos de la verdad, arco dramatico, backstage (procesos internos)."
+  },
+  {
+    num: 5, cat: "Customer Journey Map", catColor: "#FF6A00",
+    q: "Arquetipos vs Buyer Persona",
+    a: "<b>Arquetipo:</b> perfil semi-ficticio basado en datos reales, enfocado en COMPORTAMIENTOS y motivaciones.<br><b>Buyer persona:</b> perfil demografico.<br><br>El arquetipo es mas profundo porque incluye el <em>por que</em> detras de la accion."
+  },
+  {
+    num: 6, cat: "Customer Journey Map", catColor: "#FF6A00",
+    q: "Mapa de Empatia",
+    a: "Herramienta de 6 cuadrantes:<ul><li>Que piensa y siente?</li><li>Que oye?</li><li>Que ve?</li><li>Que dice y hace?</li><li>Esfuerzos (pains)</li><li>Resultados (gains)</li></ul>Sirve para entender al usuario antes de diseñar."
+  },
+  {
+    num: 7, cat: "Design Thinking", catColor: "#818cf8",
+    q: "Que es Design Thinking?",
+    a: "Metodologia de innovacion centrada en las personas que combina pensamiento divergente y convergente. Busca soluciones creativas a problemas complejos a traves de la empatia con el usuario."
+  },
+  {
+    num: 8, cat: "Design Thinking", catColor: "#818cf8",
+    q: "Etapas del Design Thinking (5)",
+    a: "<ul><li><b>Empatizar:</b> entender al usuario (observar, entrevistar, vivir su experiencia)</li><li><b>Definir:</b> sintetizar insights, formular el problema con HMW</li><li><b>Idear:</b> generar muchas ideas sin juzgar (brainstorming, SCAMPER)</li><li><b>Prototipar:</b> construir versiones rapidas y baratas de la solucion</li><li><b>Testear:</b> probar con usuarios reales, iterar segun feedback</li></ul>"
+  },
+  {
+    num: 9, cat: "Design Thinking", catColor: "#818cf8",
+    q: "HMW (How Might We)",
+    a: "Tecnica para reformular problemas como oportunidades de diseño.<br><br><b>Formato:</b> \"Como podriamos [verbo] para [usuario] de modo que [resultado]?\"<br><br><b>Ejemplo:</b> \"Como podriamos simplificar el checkout para clientes mayores de modo que completen la compra sin frustracion?\""
+  },
+  {
+    num: 10, cat: "Design Thinking", catColor: "#818cf8",
+    q: "Principios del Design Thinking",
+    a: "<ul><li>Colaboracion radical</li><li>Experiencias concretas sobre abstracciones</li><li>Personas primero (centrado en el humano)</li><li>Implicar a los usuarios en el proceso</li><li>Prototipar para pensar</li></ul>"
+  },
+  {
+    num: 11, cat: "Frameworks", catColor: "#22d3ee",
+    q: "SCAMPER",
+    a: "Tecnica de ideacion:<ul><li><b>S</b>ustituir</li><li><b>C</b>ombinar</li><li><b>A</b>daptar</li><li><b>M</b>odificar</li><li><b>P</b>oner otros usos</li><li><b>E</b>liminar</li><li><b>R</b>eordenar</li></ul>Se aplica a un producto/servicio existente para generar variaciones e innovacion incremental."
+  },
+  {
+    num: 12, cat: "Frameworks", catColor: "#22d3ee",
+    q: "Lean Startup",
+    a: "<b>Build-Measure-Learn.</b><br><br>Crear MVP (producto minimo viable), medir resultados con usuarios reales, aprender e iterar. Foco en validar hipotesis rapidamente con minimo desperdicio."
+  },
+  {
+    num: 13, cat: "Frameworks", catColor: "#22d3ee",
+    q: "Diferenciacion (4 pilares)",
+    a: "<ul><li><b>Fidelizacion:</b> programas de lealtad, comunidad</li><li><b>Pricing:</b> estrategia de precios como diferenciador</li><li><b>Segmentacion de nicho:</b> especializarse en un segmento especifico</li><li><b>Experiencia:</b> diseñar momentos memorables</li></ul>"
+  },
+  {
+    num: 14, cat: "Jobs to be Done", catColor: "#4ade80",
+    q: "Que es JTBD?",
+    a: "Teoria de Clayton Christensen: los clientes no compran productos, <b>\"contratan\" soluciones</b> para hacer un \"trabajo\" en su vida. El foco esta en el <b>progreso</b> que el cliente quiere lograr, no en el producto."
+  },
+  {
+    num: 15, cat: "Jobs to be Done", catColor: "#4ade80",
+    q: "3 tipos de Jobs",
+    a: "<ul><li><b>Funcional:</b> la tarea practica que quiere realizar (ej: \"necesito calzado que no me duela\")</li><li><b>Emocional:</b> como quiere sentirse (ej: \"quiero sentirme cuidado y seguro\")</li><li><b>Social:</b> como quiere que otros lo perciban (ej: \"quiero que vean que uso calzado premium\")</li></ul>"
+  },
+  {
+    num: 16, cat: "Servicios", catColor: "#4ade80",
+    q: "Caracteristicas de los servicios (4)",
+    a: "<ul><li><b>Intangibilidad:</b> no se pueden tocar antes de consumir</li><li><b>Inseparabilidad:</b> se producen y consumen simultaneamente</li><li><b>Heterogeneidad:</b> cada prestacion es diferente</li><li><b>Perecibilidad:</b> no se pueden almacenar</li></ul>"
+  }
+];
+
+// ========================================================
+// DATA: QUIZ QUESTIONS
+// ========================================================
+// Banco de preguntas completo (~55). En cada intento se seleccionan 20 al azar
+// y las alternativas dentro de cada pregunta tambien se mezclan.
+const questionBank = [
+  {
+    q: "Cual es la secuencia correcta de las etapas del Design Thinking?",
+    opts: [
+      "Idear -> Empatizar -> Definir -> Prototipar -> Testear",
+      "Definir -> Empatizar -> Idear -> Testear -> Prototipar",
+      "Empatizar -> Definir -> Idear -> Prototipar -> Testear",
+      "Empatizar -> Idear -> Definir -> Testear -> Prototipar"
+    ],
+    correct: 2
+  },
+  {
+    q: "En el framework JTBD, que tipo de \"job\" se refiere a como el cliente quiere ser percibido por otros?",
+    opts: ["Job funcional", "Job emocional", "Job social", "Job operacional"],
+    correct: 2
+  },
+  {
+    q: "Que herramienta se usa para reformular problemas como oportunidades de diseño?",
+    opts: ["Mapa de empatia", "HMW (How Might We)", "SCAMPER", "Customer Journey Map"],
+    correct: 1
+  },
+  {
+    q: "En el caso ConfortStyle, cual es el pilar de diferenciacion principal?",
+    opts: ["Pricing competitivo", "Fidelizacion mediante programa de puntos", "Experiencia personalizada (consultoria podologica)", "Segmentacion masiva"],
+    correct: 2
+  },
+  {
+    q: "Cual NO es una caracteristica de los servicios?",
+    opts: ["Intangibilidad", "Heterogeneidad", "Almacenabilidad", "Inseparabilidad"],
+    correct: 2
+  },
+  {
+    q: "En el CJM, que representa el \"arco dramatico\"?",
+    opts: ["La historia de la empresa", "La curva emocional del cliente a lo largo del journey", "El guion de venta del vendedor", "La secuencia de emails"],
+    correct: 1
+  },
+  {
+    q: "Que fase del CJM corresponde a cuando el cliente recomienda la marca a otros?",
+    opts: ["Fidelizacion", "Experiencia", "Promocion (advocacy)", "Consideracion"],
+    correct: 2
+  },
+  {
+    q: "Cual es la diferencia clave entre CJM As-Is y To-Be?",
+    opts: ["As-Is es para B2B y To-Be para B2C", "As-Is mapea la experiencia actual; To-Be diseña la experiencia ideal", "As-Is es cualitativo y To-Be es cuantitativo", "Son lo mismo con diferente nombre"],
+    correct: 1
+  },
+  {
+    q: "En el caso ConfortStyle, cual es el principal pain point del canal digital?",
+    opts: ["Precios muy altos", "Falta de variedad de productos", "Friccion en el checkout y logistica deficiente", "Mala atencion al cliente"],
+    correct: 2
+  },
+  {
+    q: "Que significa la \"S\" en SCAMPER?",
+    opts: ["Simplificar", "Sustituir", "Segmentar", "Sincronizar"],
+    correct: 1
+  },
+  {
+    q: "En Design Thinking, la fase de \"divergencia\" se asocia principalmente con:",
+    opts: ["Definir el problema", "Generar la mayor cantidad de ideas posible (idear)", "Prototipar la solucion", "Testear con usuarios"],
+    correct: 1
+  },
+  {
+    q: "Que cuadrante del Mapa de Empatia captura las frustraciones del usuario?",
+    opts: ["Que ve?", "Que oye?", "Esfuerzos (pains)", "Que dice y hace?"],
+    correct: 2
+  },
+  {
+    q: "En Lean Startup, que es un MVP?",
+    opts: ["Un producto de marketing viral premium", "Producto minimo viable para validar hipotesis", "La version final del producto", "Un modelo de ventas premium"],
+    correct: 1
+  },
+  {
+    q: "Cual es el \"backstage\" en un CJM?",
+    opts: ["La experiencia del cliente", "Los competidores", "Los procesos internos que el cliente no ve pero afectan su experiencia", "Las redes sociales"],
+    correct: 2
+  },
+  {
+    q: "En ConfortStyle, la \"disonancia de experiencia\" se refiere a:",
+    opts: ["Que los precios son diferentes online y offline", "Que la experiencia fisica es excelente pero la digital es fria y frustrante", "Que los empleados dan informacion contradictoria", "Que el producto no coincide con las fotos"],
+    correct: 1
+  },
+  {
+    q: "Que tipo de mapa identifica actores primarios, secundarios, clave y con poder de veto?",
+    opts: ["Customer Journey Map", "Mapa de Empatia", "Mapa de Actores/Ecosistemas", "Blueprint de servicio"],
+    correct: 2
+  },
+  {
+    q: "Un \"momento de la verdad\" en el CJM es:",
+    opts: ["Cualquier interaccion con la marca", "Una interaccion critica que define si el cliente continua o abandona", "El primer contacto con la marca", "La queja del cliente"],
+    correct: 1
+  },
+  {
+    q: "Por que ConfortStyle necesita atraer al segmento 30-40 años?",
+    opts: ["Porque son mas rentables que los mayores de 40", "Porque es un requisito legal", "Para asegurar la sustentabilidad futura del negocio ampliando su base", "Porque los mayores de 40 ya no compran"],
+    correct: 2
+  },
+  {
+    q: "La caracteristica de \"inseparabilidad\" de los servicios significa que:",
+    opts: ["No se pueden separar en partes", "Se producen y consumen al mismo tiempo", "No se pueden vender por separado", "El cliente no puede separarse del proveedor"],
+    correct: 1
+  },
+  {
+    q: "Cual seria un HMW correcto para ConfortStyle?",
+    opts: [
+      "\"Como podriamos vender mas zapatillas?\"",
+      "\"Como podriamos bajar los precios?\"",
+      "\"Como podriamos replicar la calidez de la tienda fisica en el canal digital para que los clientes jovenes confien en comprar online?\"",
+      "\"Como podriamos eliminar las tiendas fisicas?\""
+    ],
+    correct: 2
+  },
+  // === Preguntas adicionales para variacion ===
+  {
+    q: "Un arquetipo de cliente se diferencia de un buyer persona en que:",
+    opts: [
+      "El arquetipo incluye datos demograficos y el buyer persona no",
+      "El arquetipo se enfoca en comportamientos y motivaciones, no solo en demografia",
+      "El buyer persona es mas profundo que el arquetipo",
+      "Son exactamente lo mismo"
+    ],
+    correct: 1
+  },
+  {
+    q: "En Design Thinking, la fase de \"convergencia\" implica principalmente:",
+    opts: [
+      "Generar ideas sin juzgar",
+      "Filtrar, priorizar y decidir sobre las ideas generadas",
+      "Entrevistar al usuario",
+      "Testear prototipos con usuarios reales"
+    ],
+    correct: 1
+  },
+  {
+    q: "Que tecnica de ideacion se basa en las letras Sustituir, Combinar, Adaptar, Modificar, Poner otros usos, Eliminar, Reordenar?",
+    opts: ["HMW", "SCAMPER", "Lightning Decision Jam", "Brainwriting"],
+    correct: 1
+  },
+  {
+    q: "La caracteristica de \"intangibilidad\" de un servicio significa que:",
+    opts: [
+      "No se puede tocar antes de consumirlo",
+      "No se puede escalar",
+      "No tiene precio definido",
+      "No necesita marketing"
+    ],
+    correct: 0
+  },
+  {
+    q: "En el CJM, un \"touchpoint\" es:",
+    opts: [
+      "Un pain point del cliente",
+      "Un punto de contacto entre el cliente y la marca",
+      "La emocion del cliente",
+      "El objetivo del journey"
+    ],
+    correct: 1
+  },
+  {
+    q: "Que metodologia se caracteriza por el ciclo Build-Measure-Learn?",
+    opts: ["Design Thinking", "Scrum", "Lean Startup", "SCAMPER"],
+    correct: 2
+  },
+  {
+    q: "En Scrum, un sprint dura tipicamente:",
+    opts: ["1 dia", "1 a 4 semanas", "6 meses", "1 año"],
+    correct: 1
+  },
+  {
+    q: "El NPS (Net Promoter Score) mide:",
+    opts: [
+      "La probabilidad de que el cliente recomiende la marca",
+      "La satisfaccion general del cliente",
+      "El esfuerzo que hace el cliente para resolver un problema",
+      "El gasto promedio del cliente"
+    ],
+    correct: 0
+  },
+  {
+    q: "El CES (Customer Effort Score) mide:",
+    opts: [
+      "La recomendacion de la marca",
+      "El esfuerzo que hace el cliente para lograr un objetivo con la marca",
+      "La emocion del cliente",
+      "La lealtad del cliente"
+    ],
+    correct: 1
+  },
+  {
+    q: "En Design Thinking, HMW significa:",
+    opts: ["High Motivation Way", "How Might We", "Human Motivation Work", "Holistic Modern Way"],
+    correct: 1
+  },
+  {
+    q: "En el caso ConfortStyle, \"la pesadilla de la ultima milla\" se refiere a:",
+    opts: [
+      "El diseño obsoleto del sitio web",
+      "Problemas en la entrega y logistica con retrasos y fallas",
+      "La cantidad de pasos en el checkout",
+      "El tiempo que tarda la asesoria presencial"
+    ],
+    correct: 1
+  },
+  {
+    q: "El Job funcional del cliente ConfortStyle es principalmente:",
+    opts: [
+      "Sentirse joven",
+      "Calzado que alivie molestias y brinde confort al caminar",
+      "Verse elegante en eventos sociales",
+      "Ahorrar dinero"
+    ],
+    correct: 1
+  },
+  {
+    q: "El Job emocional del cliente ConfortStyle podria ser:",
+    opts: [
+      "Ahorrar tiempo en la compra",
+      "Sentirse cuidado y tranquilo respecto a su salud",
+      "Obtener el menor precio posible",
+      "Encontrar un producto de moda"
+    ],
+    correct: 1
+  },
+  {
+    q: "En servicios, la \"heterogeneidad\" se refiere a:",
+    opts: [
+      "Que se producen y consumen a la vez",
+      "Que varian de una prestacion a otra, aunque sean del mismo servicio",
+      "Que no se pueden almacenar",
+      "Que son tangibles"
+    ],
+    correct: 1
+  },
+  {
+    q: "La \"perecibilidad\" de los servicios implica:",
+    opts: [
+      "Que expiran rapido como la comida",
+      "Que no se pueden almacenar ni producir por adelantado",
+      "Que se rompen con facilidad",
+      "Que deben consumirse inmediatamente tras comprar"
+    ],
+    correct: 1
+  },
+  {
+    q: "Que herramienta combina las preguntas Que ve? Que oye? Que piensa y siente? Que dice y hace?",
+    opts: ["Customer Journey Map", "Mapa de Empatia", "Blueprint de servicio", "Matriz de Actores"],
+    correct: 1
+  },
+  {
+    q: "Cual de estos NO es un pilar del diseño de servicios?",
+    opts: ["Centrado en el usuario", "Narrativo", "Masivo", "Interdisciplinario"],
+    correct: 2
+  },
+  {
+    q: "En el ecosistema de actores, un actor con \"poder de veto\" es:",
+    opts: [
+      "El cliente final",
+      "Alguien que puede bloquear la decision aunque no la tome directamente",
+      "Un empleado operativo",
+      "Un proveedor menor"
+    ],
+    correct: 1
+  },
+  {
+    q: "Los 4 pilares de diferenciacion en diseño de servicios son:",
+    opts: [
+      "Precio, calidad, velocidad, marca",
+      "Fidelizacion, pricing, segmentacion de nicho, experiencia",
+      "Producto, plaza, promocion, precio",
+      "Innovacion, tradicion, velocidad, prestigio"
+    ],
+    correct: 1
+  },
+  {
+    q: "En el marketing mix de servicios (7Ps), las 3 P adicionales al 4P clasico son:",
+    opts: [
+      "Packaging, Publicity, Promotion",
+      "People, Process, Physical evidence",
+      "Price, Place, Product",
+      "Positioning, Partners, Profit"
+    ],
+    correct: 1
+  },
+  {
+    q: "Cual es el proposito principal de un CJM As-Is?",
+    opts: [
+      "Vender mas productos",
+      "Entender la experiencia actual con sus puntos de dolor para detectar oportunidades",
+      "Definir la mision de la empresa",
+      "Segmentar geograficamente al cliente"
+    ],
+    correct: 1
+  },
+  {
+    q: "Prototipar en Design Thinking significa:",
+    opts: [
+      "Construir el producto final",
+      "Crear una version rapida y barata de la idea para testearla",
+      "Escribir el manual del producto",
+      "Lanzar al mercado"
+    ],
+    correct: 1
+  },
+  {
+    q: "Que fase del CJM ocurre ANTES de la compra?",
+    opts: ["Fidelizacion", "Experiencia", "Consideracion", "Promocion"],
+    correct: 2
+  },
+  {
+    q: "En el caso ConfortStyle, el segmento core actual son personas:",
+    opts: [
+      "Menores de 25 años",
+      "Mayores de 40 con dolencias cronicas o buscando confort premium",
+      "Solo deportistas profesionales",
+      "Niños y adolescentes"
+    ],
+    correct: 1
+  },
+  {
+    q: "La \"colaboracion radical\" es un principio de:",
+    opts: ["Lean Startup", "Design Thinking", "Scrum", "SCAMPER"],
+    correct: 1
+  },
+  {
+    q: "Que tecnica se usa en Design Thinking para tomar decisiones rapidas en sesiones grupales?",
+    opts: ["Lightning Decision Jam", "Blueprint", "Gemba walk", "Six Sigma"],
+    correct: 0
+  },
+  {
+    q: "Un \"insight\" en Design Thinking es:",
+    opts: [
+      "Un dato estadistico",
+      "Un descubrimiento no obvio sobre el usuario que inspira soluciones",
+      "El nombre de una tecnica",
+      "Un resumen del informe final"
+    ],
+    correct: 1
+  },
+  {
+    q: "Cual es la mejor descripcion de un MVP?",
+    opts: [
+      "La version mas costosa para impresionar",
+      "Un producto funcional minimo que permite aprender con usuarios reales",
+      "Una campaña de marketing muy pulida",
+      "El producto definitivo listo para lanzar"
+    ],
+    correct: 1
+  },
+  {
+    q: "Que diferencia a un producto de un servicio?",
+    opts: [
+      "El producto es tangible y almacenable; el servicio es intangible y perecedero",
+      "El servicio es mas caro",
+      "El producto no requiere personas",
+      "No hay diferencias"
+    ],
+    correct: 0
+  },
+  {
+    q: "En JTBD, un cliente que \"contrata\" un servicio lo hace para:",
+    opts: [
+      "Lograr un progreso en su vida o resolver un problema",
+      "Ayudar a la empresa",
+      "Cumplir una obligacion legal",
+      "Aumentar las ventas del proveedor"
+    ],
+    correct: 0
+  },
+  {
+    q: "El concepto de \"experiencias concretas sobre abstracciones\" es un principio de:",
+    opts: ["SCAMPER", "Lean Manufacturing", "Design Thinking", "Six Sigma"],
+    correct: 2
+  },
+  {
+    q: "En ConfortStyle, que framework es el MAS adecuado para abordar el problema de canal digital?",
+    opts: [
+      "Six Sigma, porque reduce defectos",
+      "Design Thinking, porque centra la solucion en la empatia con el usuario",
+      "Waterfall, porque es lineal",
+      "ISO 9001, porque certifica calidad"
+    ],
+    correct: 1
+  },
+  {
+    q: "Un \"Customer Insight\" tiene valor cuando:",
+    opts: [
+      "Confirma lo que ya sabiamos",
+      "Es contraintuitivo, especifico y accionable para el negocio",
+      "Es un dato demografico",
+      "Proviene de un competidor"
+    ],
+    correct: 1
+  },
+  {
+    q: "En el CJM, el \"frontstage\" se refiere a:",
+    opts: [
+      "Los procesos internos que el cliente no ve",
+      "Todo lo que el cliente percibe e interactua directamente",
+      "La competencia",
+      "El area de ventas"
+    ],
+    correct: 1
+  },
+  {
+    q: "Que problema de ConfortStyle podria resolverse con un blueprint de servicio digital?",
+    opts: [
+      "El color del logo",
+      "Mapear procesos internos (backstage) que generan la friccion en checkout y logistica",
+      "La linea editorial del blog",
+      "La ubicacion de las tiendas fisicas"
+    ],
+    correct: 1
+  }
+];
+
+// Alias en uso por el resto del codigo (se rellena con el subset aleatorio en cada intento)
+let quizQuestions = [];
+
+// ========================================================
+// DATA: DESARROLLO QUESTIONS
+// ========================================================
+const desarrolloQuestions = [
+  {
+    num: 1, color: "#FF6A00",
+    q: "Construye un arquetipo del cliente joven (30-40 años) con su Mapa de Empatia y Jobs to be Done",
+    sections: [
+      { title: "ARQUETIPO: \"Daniela, 35 años\"", color: "#FF6A00", content: "<ul><li>Profesional activa, trabaja de pie o camina mucho</li><li>Ingreso medio-alto, valora calidad sobre precio</li><li>Digitalmente nativa, compra online con frecuencia</li><li>Empieza a sentir molestias en pies/rodillas pero no se considera \"paciente\"</li><li>Busca calzado que combine salud con estetica moderna</li></ul>" },
+      { title: "MAPA DE EMPATIA", color: "#818cf8", content: "<ul><li><b>Piensa/Siente:</b> \"No quiero usar zapatillas de abuela\" / \"Me preocupa que el dolor empeore\"</li><li><b>Ve:</b> Influencers de bienestar, marcas como Nike/New Balance que hablan de confort</li><li><b>Oye:</b> Su kinesiologo le recomienda calzado especializado</li><li><b>Dice/Hace:</b> Busca en Google \"zapatillas comodas para caminar\", compara en redes</li><li><b>Esfuerzos (pains):</b> Checkout complicado, no puede probarse online, desconfia de la entrega</li><li><b>Resultados (gains):</b> Caminar sin dolor, verse bien, comprar desde el celular</li></ul>" },
+      { title: "JOBS TO BE DONE", color: "#4ade80", content: "<ul><li><b>Funcional:</b> Necesito calzado que alivie mis molestias al caminar</li><li><b>Emocional:</b> Quiero sentirme proactiva cuidando mi salud sin sentirme \"vieja\"</li><li><b>Social:</b> Quiero que mi calzado se vea moderno, no ortopedico</li></ul>" }
+    ]
+  },
+  {
+    num: 2, color: "#818cf8",
+    q: "Customer Journey Map As-Is del canal digital (Google Ads -> recepcion)",
+    sections: [
+      { title: "ETAPAS DEL JOURNEY", color: "#818cf8", content: "<ul><li><b>1. Reconocimiento:</b> Ve anuncio Google Ads -> expectativa alta por el copy</li><li><b>2. Consideracion:</b> Entra al e-commerce -> diseño anticuado, poca info de beneficios terapeuticos</li><li><b>3. Decision:</b> Quiere comprar -> no hay asesoria personalizada como en tienda</li><li><b>4. Compra:</b> Checkout -> botones de pago fallan, tiene que reintentar, frustracion alta</li><li><b>5. Experiencia:</b> Espera el envio -> logistica erratica, no sabe cuando llega, ansiedad</li><li><b>6. Recepcion:</b> Producto llega tarde o en mal estado -> decepcion vs expectativa</li><li><b>7. Post-compra:</b> No hay seguimiento -> no vuelve a comprar online</li></ul>" },
+      { title: "PAIN POINTS CRITICOS", color: "#f87171", content: "<p>Checkout roto (conversion), ultima milla (confianza), falta de asesoria digital (diferenciacion perdida)</p>" },
+      { title: "MOMENTO DE LA VERDAD", color: "#FF6A00", content: "<p>El checkout: si falla, pierde al cliente para siempre en digital.</p>" }
+    ]
+  },
+  {
+    num: 3, color: "#22d3ee",
+    q: "Que metodologia elegirias y por que?",
+    sections: [
+      { title: "DESIGN THINKING - PORQUE:", color: "#22d3ee", content: "<ul><li>El problema es de <b>EMPATIA</b>: ConfortStyle no entiende las necesidades del cliente digital joven</li><li>Necesitan <b>REDEFINIR</b> el problema (no es solo \"arreglar el sitio web\", es \"replicar la experiencia humana en digital\")</li><li>Permite <b>PROTOTIPAR</b> rapido: mockup de nuevo checkout, chatbot de asesoria, tracking de envio</li><li>Es <b>ITERATIVO</b>: pueden testear con clientes reales antes de invertir fuerte</li></ul>" },
+      { title: "APLICACION DE LAS 5 ETAPAS", color: "#818cf8", content: "<ul><li><b>Empatizar:</b> Entrevistar clientes 30-40, observar su frustracion en el sitio</li><li><b>Definir:</b> HMW \"Como podriamos crear una asesoria podologica digital tan calida como la presencial?\"</li><li><b>Idear:</b> Videollamada con consultor, quiz de salud podologica, probador virtual, chatbot experto</li><li><b>Prototipar:</b> Mockup del nuevo flujo de compra con asesoria integrada</li><li><b>Testear:</b> 10 usuarios prueban el prototipo, medir tasa de completado</li></ul>" }
+    ]
+  },
+  {
+    num: 4, color: "#4ade80",
+    q: "Cual es el pilar de diferenciacion de ConfortStyle?",
+    sections: [
+      { title: "EXPERIENCIA", color: "#4ade80", content: "<p><b>Experiencia de servicio personalizada.</b></p><p>Su ventaja no es el precio (son caros), ni la fidelizacion formal (no tienen programa), ni el nicho puro (hay otros calzados terapeuticos). Lo que los hace unicos es que sus vendedores actuan como <b>\"consultores de salud podologica\"</b> &#8212; eso es experiencia de servicio diferenciada.</p>" },
+      { title: "EL DESAFIO", color: "#FF6A00", content: "<p>TRASLADAR esa experiencia al canal digital sin perder la calidez humana.</p>" }
+    ]
+  }
+];
+
+// ========================================================
+// RENDER: FLIP CARDS
+// ========================================================
+(function renderCards() {
+  const grid = document.getElementById('cardsGrid');
+  flashCards.forEach((card, i) => {
+    const el = document.createElement('div');
+    el.className = 'flip-card';
+    el.style.animationDelay = (i * 0.05) + 's';
+    el.onclick = () => el.classList.toggle('flipped');
+    el.innerHTML = `
+      <div class="flip-card-inner">
+        <div class="flip-card-front">
+          <span class="card-num">#${card.num}</span>
+          <div class="card-cat" style="color:${card.catColor}">${card.cat}</div>
+          <h3>${card.q}</h3>
+          <div class="hint">Clic para ver respuesta</div>
+        </div>
+        <div class="flip-card-back">
+          <h4>Respuesta</h4>
+          <div>${card.a}</div>
+        </div>
+      </div>
+    `;
+    grid.appendChild(el);
+  });
+})();
+
+// ========================================================
+// RENDER: QUIZ (con banco + shuffle + reset)
+// ========================================================
+let score = 0;
+let answered = 0;
+let attempt = 1;
+const QUIZ_SIZE = 20;   // cuantas preguntas muestro en cada intento
+const letters = ['a', 'b', 'c', 'd'];
+
+// Fisher-Yates shuffle (no muta el array original)
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// Construye el subset de preguntas de este intento:
+// 1) Toma 20 al azar del banco completo
+// 2) Mezcla las alternativas dentro de cada pregunta y reajusta el indice correct
+function buildQuizRound() {
+  const pick = shuffle(questionBank).slice(0, QUIZ_SIZE);
+  return pick.map(orig => {
+    const correctText = orig.opts[orig.correct];
+    const shuffledOpts = shuffle(orig.opts);
+    const newCorrect = shuffledOpts.indexOf(correctText);
+    return { q: orig.q, opts: shuffledOpts, correct: newCorrect };
+  });
+}
+
+function renderQuiz() {
+  const container = document.getElementById('quizContainer');
+  container.innerHTML = '';
+  quizQuestions.forEach((q, qi) => {
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = 'qcard-' + qi;
+    let optsHtml = '';
+    q.opts.forEach((opt, oi) => {
+      optsHtml += `<button class="option-btn" data-q="${qi}" data-o="${oi}" onclick="selectAnswer(${qi},${oi},this)">
+        <span class="opt-letter">${letters[oi]})</span>${opt}
+      </button>`;
+    });
+    card.innerHTML = `
+      <div class="q-num">Pregunta ${qi + 1} de ${QUIZ_SIZE}</div>
+      <div class="q-text">${q.q}</div>
+      ${optsHtml}
+    `;
+    container.appendChild(card);
+  });
+  // Meta info
+  const poolEl = document.getElementById('poolSize');
+  const attEl = document.getElementById('attemptNum');
+  const totEl = document.getElementById('scoreTotal');
+  if (poolEl) poolEl.textContent = questionBank.length;
+  if (attEl) attEl.textContent = attempt;
+  if (totEl) totEl.textContent = QUIZ_SIZE;
+}
+
+function selectAnswer(qi, oi, btn) {
+  const card = document.getElementById('qcard-' + qi);
+  if (card.classList.contains('correct') || card.classList.contains('incorrect')) return;
+
+  const buttons = card.querySelectorAll('.option-btn');
+  const isCorrect = oi === quizQuestions[qi].correct;
+
+  buttons.forEach(b => b.classList.add('disabled'));
+
+  if (isCorrect) {
+    btn.classList.add('selected', 'right');
+    card.classList.add('correct');
+    score++;
+  } else {
+    btn.classList.add('selected', 'wrong');
+    card.classList.add('incorrect');
+    buttons[quizQuestions[qi].correct].classList.add('show-correct');
+  }
+
+  answered++;
+  document.getElementById('scoreDisplay').textContent = score;
+
+  if (answered === QUIZ_SIZE) {
+    showFinishPanel();
+    if (score > Math.floor(QUIZ_SIZE * 0.8)) launchConfetti();
+  }
+}
+
+function showFinishPanel() {
+  const panel = document.getElementById('quizFinished');
+  const title = document.getElementById('finishTitle');
+  const scoreText = document.getElementById('finishScore');
+  const emoji = document.getElementById('finishEmoji');
+  const pct = Math.round((score / QUIZ_SIZE) * 100);
+  let msg = '';
+  if (pct >= 85) { emoji.textContent = '\uD83C\uDFC6'; msg = '\u00A1Excelente! Tienes la materia dominada.'; }
+  else if (pct >= 70) { emoji.textContent = '\uD83D\uDCAA'; msg = 'Muy bien. Repasa los errores y vas listo.'; }
+  else if (pct >= 50) { emoji.textContent = '\uD83D\uDCD8'; msg = 'Vas encaminado, refuerza los conceptos que fallaste.'; }
+  else { emoji.textContent = '\uD83D\uDD04'; msg = 'A repasar la teor\u00EDa. \u00A1Reintenta cuando quieras!'; }
+  title.textContent = '\u00A1Terminaste el intento #' + attempt + '!';
+  scoreText.innerHTML = 'Obtuviste <b style="color:var(--orange)">' + score + '/' + QUIZ_SIZE + '</b> (' + pct + '%) &middot; ' + msg;
+  panel.style.display = 'block';
+  panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function resetQuiz() {
+  score = 0;
+  answered = 0;
+  attempt++;
+  document.getElementById('scoreDisplay').textContent = '0';
+  document.getElementById('quizFinished').style.display = 'none';
+  // Reset timer
+  clearInterval(timerInterval);
+  timerRunning = false;
+  timerSeconds = 15 * 60;
+  updateTimerDisplay();
+  const btn = document.getElementById('timerBtn');
+  if (btn) { btn.textContent = 'Iniciar'; btn.classList.remove('active'); }
+  document.getElementById('timerBox').classList.remove('warning');
+  // Rebuild with new random subset + shuffled options
+  quizQuestions = buildQuizRound();
+  renderQuiz();
+  // Scroll to top of quiz
+  document.getElementById('alternativas').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Inicializa primer intento
+quizQuestions = buildQuizRound();
+renderQuiz();
+
+// ========================================================
+// RENDER: DESARROLLO
+// ========================================================
+(function renderDesarrollo() {
+  const container = document.getElementById('desarrolloContainer');
+  desarrolloQuestions.forEach((dq, di) => {
+    const card = document.createElement('div');
+    card.className = 'desarrollo-card';
+    let bodyHtml = '<div class="desarrollo-content">';
+    dq.sections.forEach(s => {
+      bodyHtml += `<h4 style="color:${s.color}">${s.title}</h4>${s.content}`;
+    });
+    bodyHtml += '</div>';
+    card.innerHTML = `
+      <div class="desarrollo-header" onclick="this.parentElement.classList.toggle('open')">
+        <div class="d-num" style="background:${dq.color}">${dq.num}</div>
+        <div class="d-text">${dq.q}</div>
+        <div class="d-arrow">&#9660;</div>
+      </div>
+      <div class="desarrollo-body">${bodyHtml}</div>
+    `;
+    container.appendChild(card);
+  });
+})();
+
+// ========================================================
+// TIMER
+// ========================================================
+let timerInterval = null;
+let timerSeconds = 15 * 60;
+let timerRunning = false;
+
+function toggleTimer() {
+  const btn = document.getElementById('timerBtn');
+  if (!timerRunning) {
+    timerRunning = true;
+    btn.textContent = 'Pausar';
+    btn.classList.add('active');
+    timerInterval = setInterval(() => {
+      timerSeconds--;
+      if (timerSeconds <= 0) {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        btn.textContent = 'Reiniciar';
+        btn.classList.remove('active');
+        timerSeconds = 0;
+      }
+      updateTimerDisplay();
+    }, 1000);
+  } else {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    btn.textContent = 'Reanudar';
+    btn.classList.remove('active');
+  }
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(timerSeconds / 60);
+  const s = timerSeconds % 60;
+  const display = document.getElementById('timerDisplay');
+  display.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const box = document.getElementById('timerBox');
+  if (timerSeconds <= 120) {
+    box.classList.add('warning');
+  } else {
+    box.classList.remove('warning');
+  }
+}
+
+// ========================================================
+// PROGRESS BAR
+// ========================================================
+window.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = h > 0 ? (window.scrollY / h) * 100 : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+});
+
+// ========================================================
+// CONFETTI
+// ========================================================
+function launchConfetti() {
+  const canvas = document.getElementById('confettiCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const colors = ['#FF6A00','#818cf8','#22d3ee','#4ade80','#f87171','#fbbf24'];
+  const particles = [];
+  for (let i = 0; i < 200; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height - canvas.height,
+      w: Math.random() * 10 + 4,
+      h: Math.random() * 6 + 2,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      vy: Math.random() * 4 + 2,
+      vx: (Math.random() - 0.5) * 4,
+      rotation: Math.random() * 360,
+      rotSpeed: (Math.random() - 0.5) * 10,
+      opacity: 1
+    });
+  }
+  let frame = 0;
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+    particles.forEach(p => {
+      if (p.opacity <= 0) return;
+      alive = true;
+      p.y += p.vy;
+      p.x += p.vx;
+      p.rotation += p.rotSpeed;
+      if (frame > 120) p.opacity -= 0.01;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation * Math.PI / 180);
+      ctx.globalAlpha = Math.max(0, p.opacity);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
+    });
+    frame++;
+    if (alive) requestAnimationFrame(animate);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  animate();
+}
+</script>
+</body>
+</html>
